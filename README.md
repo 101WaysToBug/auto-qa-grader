@@ -15,17 +15,17 @@ AI-powered quality assurance grading for contact center call transcripts. Built 
 ## Architecture
 
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
-│   Frontend   │────▶│  FastAPI      │────▶│  Grading Engine  │
-│  (SPA)       │◀────│  Server       │◀────│                  │
-└─────────────┘     └──────────────┘     │  ┌─────────────┐ │
+┌─────────────┐     ┌──────────────┐     ┌─────────────────--┐
+│   Frontend   │────▶│  FastAPI      │────▶│ Grading Engine  │
+│  (SPA)       │◀────│  Server       │◀────│                 │
+└─────────────┘     └──────────────┘      │  ┌─────────────┐ │
                                           │  │ Keyword     │ │
                                           │  │ Matcher     │ │
                                           │  ├─────────────┤ │
                                           │  │ LLM Grader  │ │
                                           │  │ (Claude API)│ │
                                           │  └─────────────┘ │
-                                          └─────────────────┘
+                                          └─────────────────-|
 ```
 
 ### Three-Stage Decision Logic (per question)
