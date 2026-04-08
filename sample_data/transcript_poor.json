@@ -1,0 +1,31 @@
+{
+  "call_metadata": {
+    "call_id": "rec_2026040911154392",
+    "call_direction": "inbound",
+    "duration_seconds": 142,
+    "agent_name": "Kevin Marks"
+  },
+  "transcript": [
+    {"speaker": "agent", "timestamp": "0:00", "text": "Hello, support."},
+    {"speaker": "customer", "timestamp": "0:03", "text": "Hi, I'm calling because I can't log into my account. I've been trying all morning and it keeps saying invalid password, but I know my password is correct."},
+    {"speaker": "agent", "timestamp": "0:12", "text": "Okay, have you tried resetting your password?"},
+    {"speaker": "customer", "timestamp": "0:15", "text": "Well no, I shouldn't have to. The password was working yesterday. Something changed on your end."},
+    {"speaker": "agent", "timestamp": "0:21", "text": "Yeah so the easiest thing is to just reset your password. Go to the login page and click forgot password."},
+    {"speaker": "customer", "timestamp": "0:28", "text": "But I don't want to reset it. Can you check if something happened to my account? I'm worried it might have been hacked or something."},
+    {"speaker": "agent", "timestamp": "0:35", "text": "I can't really check that without pulling up your account. What's your email?"},
+    {"speaker": "customer", "timestamp": "0:39", "text": "It's maria.gonzalez@outlook.com."},
+    {"speaker": "agent", "timestamp": "0:43", "text": "Okay I see your account. It looks like your account got locked because of too many failed login attempts."},
+    {"speaker": "customer", "timestamp": "0:50", "text": "What? I only tried like three times. How many does it take?"},
+    {"speaker": "agent", "timestamp": "0:54", "text": "I think it's five. But it shows eight attempts on your account. Could be someone else was trying to get in."},
+    {"speaker": "customer", "timestamp": "1:02", "text": "That's really concerning. Is my account safe? Has anyone accessed it?"},
+    {"speaker": "agent", "timestamp": "1:07", "text": "I mean, the lock kicked in so probably not. You should be fine."},
+    {"speaker": "customer", "timestamp": "1:12", "text": "Probably? Can you actually verify that? I have payment information stored in there."},
+    {"speaker": "agent", "timestamp": "1:18", "text": "I don't have access to that level of detail. You'd need to talk to the security team for that. I can unlock your account though."},
+    {"speaker": "customer", "timestamp": "1:25", "text": "Okay, please unlock it and connect me to the security team then."},
+    {"speaker": "agent", "timestamp": "1:29", "text": "I've unlocked it. For the security team you'll need to email security@company.com, we don't do transfers to that department."},
+    {"speaker": "customer", "timestamp": "1:37", "text": "So you can't transfer me? I have to email them separately?"},
+    {"speaker": "agent", "timestamp": "1:41", "text": "Yeah, that's how it works. Anything else?"},
+    {"speaker": "customer", "timestamp": "1:44", "text": "I guess not. This wasn't very reassuring."},
+    {"speaker": "agent", "timestamp": "1:48", "text": "Sorry about that. Bye."}
+  ]
+}

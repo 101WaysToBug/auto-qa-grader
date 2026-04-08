@@ -1,0 +1,35 @@
+{
+  "call_metadata": {
+    "call_id": "rec_2026040815421067",
+    "call_direction": "inbound",
+    "duration_seconds": 340,
+    "agent_name": "Sarah Chen"
+  },
+  "transcript": [
+    {"speaker": "agent", "timestamp": "0:00", "text": "Thank you for calling Wati support, my name is Sarah. How can I help you today?"},
+    {"speaker": "customer", "timestamp": "0:06", "text": "Hi Sarah, I'm really frustrated. We've been using Wati for our e-commerce store notifications and since yesterday none of our order confirmation messages are going through. Our customers are complaining they're not getting any updates after placing orders. This is a nightmare during our sale week."},
+    {"speaker": "agent", "timestamp": "0:22", "text": "I completely understand how stressful that must be, especially during your sale week when order volume is high and your customers are expecting those confirmations. Let me get this sorted out for you right away. Can I get your registered email or account number so I can pull up your account?"},
+    {"speaker": "customer", "timestamp": "0:35", "text": "Sure, the email is ops@urbanstyle.co"},
+    {"speaker": "agent", "timestamp": "0:40", "text": "Thank you. I've pulled up your account. So just to make sure I understand correctly — your order confirmation template messages have stopped delivering since yesterday, and this is affecting all orders, not just specific ones. Is that right?"},
+    {"speaker": "customer", "timestamp": "0:53", "text": "Yes, exactly. Every single order confirmation is failing. We've had about 200 orders since yesterday with no confirmations going out."},
+    {"speaker": "agent", "timestamp": "1:01", "text": "That's a significant impact — 200 orders without confirmations. Let me systematically check what's going on. First, I'm verifying your API connection status... that looks active and healthy. Now let me check your message template approvals."},
+    {"speaker": "customer", "timestamp": "1:15", "text": "We haven't changed any templates recently."},
+    {"speaker": "agent", "timestamp": "1:18", "text": "Good to know. I can see the issue — your order confirmation template was re-reviewed by Meta yesterday and its status changed from 'Approved' to 'Paused'. This sometimes happens when Meta does periodic template reviews. It doesn't mean you did anything wrong; it's part of their automated compliance checks."},
+    {"speaker": "customer", "timestamp": "1:35", "text": "So Meta just paused our template without any warning? That's ridiculous."},
+    {"speaker": "agent", "timestamp": "1:39", "text": "I hear you — it's frustrating when this happens without notice, especially with a business-critical template. Unfortunately, Meta's review process is automated and they don't always notify in advance. Here's what I'm going to do to get this resolved. First, I'm going to submit an appeal to Meta right now to get your template re-approved. Typically these appeals are processed within 4 to 8 hours."},
+    {"speaker": "customer", "timestamp": "1:58", "text": "4 to 8 hours? Is there anything faster?"},
+    {"speaker": "agent", "timestamp": "2:01", "text": "I understand the urgency. While the appeal is processing, I have a workaround for you. You can create a duplicate of your order confirmation template with slightly modified wording. New template submissions for utility messages are usually approved within 30 minutes to an hour. I can walk you through exactly what to change so it gets approved quickly."},
+    {"speaker": "customer", "timestamp": "2:18", "text": "Okay yes, let's do that. What do I need to change?"},
+    {"speaker": "agent", "timestamp": "2:22", "text": "Great. Go to your template manager and duplicate the order confirmation template. Change the template name to 'order_confirm_v2'. For the body, keep your existing content but add a slight variation — for example, change 'Your order has been confirmed' to 'We've confirmed your order'. This makes it a distinct template for Meta's review. I'll stay on the line while you do this."},
+    {"speaker": "customer", "timestamp": "2:45", "text": "Okay, I've created it and submitted it for approval."},
+    {"speaker": "agent", "timestamp": "2:48", "text": "Perfect. Now on the API side, once the new template is approved, you'll need to update your API integration to reference the new template name. The variable placeholders will remain the same, so it should be a simple string change. Do you have a developer who handles that, or would you like me to walk you through the API documentation?"},
+    {"speaker": "customer", "timestamp": "3:05", "text": "Our developer can handle it. I'll pass this over to him. This is really helpful, thank you."},
+    {"speaker": "agent", "timestamp": "3:10", "text": "You're welcome. Let me also set something up to prevent this from catching you off guard again. I'm adding a template status monitoring webhook to your account. This way, if any of your templates change status, you'll get an instant notification to your ops email. Would you like that?"},
+    {"speaker": "customer", "timestamp": "3:24", "text": "Yes, absolutely. That would be great."},
+    {"speaker": "agent", "timestamp": "3:27", "text": "Done. I've configured the webhook. So to recap everything: I've submitted an appeal for your original template — expect that within 4 to 8 hours. In the meantime, your new template should be approved shortly, and your developer can swap it in with a quick API change. I've also set up monitoring so you'll know immediately if any template status changes in the future. Is there anything else I can help with?"},
+    {"speaker": "customer", "timestamp": "3:48", "text": "No, this was really thorough. I feel much better about it now. Thanks Sarah."},
+    {"speaker": "agent", "timestamp": "3:52", "text": "Happy to help. For your reference, the ticket number for this case is TKT-59204. I'll follow up via email once the original template appeal is resolved. Have a great rest of your day, and good luck with the sale!"},
+    {"speaker": "customer", "timestamp": "4:02", "text": "Thanks, bye!"},
+    {"speaker": "agent", "timestamp": "4:04", "text": "Goodbye!"}
+  ]
+}

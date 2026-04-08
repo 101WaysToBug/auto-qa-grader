@@ -1,0 +1,18 @@
+{
+  "scorecard_id": "sc_support_q2_2026",
+  "name": "Support Team — Q2 2026",
+  "critical_fail_behavior": "flag",
+  "min_duration_seconds": 30,
+  "score_mappings": [
+    {"question_id": "q_001", "scores": {"Yes": 5, "No": 0}},
+    {"question_id": "q_002", "scores": {"Yes": 10, "No": 0}},
+    {"question_id": "q_003", "scores": {"Yes": 5, "No": 0}},
+    {"question_id": "q_004", "scores": {"Yes": 5, "No": 0}},
+    {"question_id": "q_005", "scores": {"0": 0, "1": 5, "2": 10}},
+    {"question_id": "q_006", "scores": {"0": 0, "1": 5, "2": 10}},
+    {"question_id": "q_007", "scores": {"Yes": 10, "No": 0}},
+    {"question_id": "q_008", "scores": {"Yes": 5, "No": 0}},
+    {"question_id": "q_009", "scores": {"Yes": 5, "No": 0}},
+    {"question_id": "q_010", "scores": {"Yes": 5, "No": 0}}
+  ]
+}

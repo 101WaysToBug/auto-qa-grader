@@ -1,0 +1,35 @@
+{
+  "call_metadata": {
+    "call_id": "rec_2026040814302847",
+    "call_direction": "inbound",
+    "duration_seconds": 285,
+    "agent_name": "Priya Sharma"
+  },
+  "transcript": [
+    {"speaker": "agent", "timestamp": "0:00", "text": "Hi, thank you for calling Wati support. This is Priya, how can I help you today?"},
+    {"speaker": "customer", "timestamp": "0:06", "text": "Yeah hi, my name is Ravi. I've been trying to send broadcast messages since yesterday morning and they keep failing. This is really affecting my business — I run promotions every day and I've missed two days now."},
+    {"speaker": "agent", "timestamp": "0:18", "text": "I'm sorry to hear that, Ravi. Let me pull up your account. Can you give me your registered email or phone number?"},
+    {"speaker": "customer", "timestamp": "0:24", "text": "Sure, it's ravi@freshbites.in"},
+    {"speaker": "agent", "timestamp": "0:28", "text": "Thank you. I can see your account here. So you're saying broadcast messages have been failing since yesterday — is that for all templates or a specific one?"},
+    {"speaker": "customer", "timestamp": "0:36", "text": "All of them. I tried three different templates and none of them go through. The status just shows 'failed' after a few minutes."},
+    {"speaker": "agent", "timestamp": "0:44", "text": "Got it. Let me check a few things on your account. First, I can see your WhatsApp Business API status is active, which is good. Let me check your message queue and template approval status."},
+    {"speaker": "customer", "timestamp": "0:55", "text": "I haven't changed anything on my end. It was working fine last week."},
+    {"speaker": "agent", "timestamp": "0:59", "text": "I understand. So looking at your account, I can see the issue — your quality rating dropped to 'Low' yesterday, which means Meta has temporarily restricted your messaging. This usually happens when too many recipients report or block your messages."},
+    {"speaker": "customer", "timestamp": "1:15", "text": "What? But I only send to people who opted in!"},
+    {"speaker": "agent", "timestamp": "1:19", "text": "I understand your frustration. Even with opted-in contacts, if a certain percentage mark the message as spam or block the number, Meta's automated system flags it. It doesn't necessarily mean you did anything wrong — sometimes customers opt in but then forget they did."},
+    {"speaker": "customer", "timestamp": "1:35", "text": "Okay, so what do I do now? I need to get this fixed as soon as possible."},
+    {"speaker": "agent", "timestamp": "1:40", "text": "Here's what we need to do. First, the quality rating typically recovers within 24 to 48 hours if no new reports come in. During this time, I'd recommend pausing all broadcast sends. Second, when it recovers, start with a smaller batch — maybe 20% of your usual volume — and gradually increase over a few days."},
+    {"speaker": "customer", "timestamp": "2:00", "text": "48 hours? That's two more days of lost revenue for me."},
+    {"speaker": "agent", "timestamp": "2:04", "text": "I completely understand how frustrating that is, especially with daily promotions being core to your business. Unfortunately, the quality rating recovery is controlled by Meta's system and we can't speed it up on our end. What I can do is set up a monitoring alert on your account so I'll personally notify you the moment your rating recovers."},
+    {"speaker": "customer", "timestamp": "2:22", "text": "Alright, that would help. Is there anything else I should check on my end?"},
+    {"speaker": "agent", "timestamp": "2:26", "text": "Yes — I'd suggest reviewing your contact list and removing anyone who hasn't engaged with your messages in the last 30 days. That will help keep your quality rating stable once it recovers. Also, make sure your opt-in flow clearly sets expectations about message frequency."},
+    {"speaker": "customer", "timestamp": "2:42", "text": "Okay, I'll do that. Anything else?"},
+    {"speaker": "agent", "timestamp": "2:45", "text": "One more thing — you might want to consider using our click-to-WhatsApp flow for re-engagement instead of broadcasts for the next week. That way customers initiate the conversation, which doesn't affect your quality rating at all."},
+    {"speaker": "customer", "timestamp": "2:58", "text": "That's actually a good idea. Thanks."},
+    {"speaker": "agent", "timestamp": "3:01", "text": "Happy to help. So to summarize: I've set up the monitoring alert, you'll pause broadcasts until the rating recovers, clean up your contact list, and consider click-to-WhatsApp for re-engagement. Do you have any other questions?"},
+    {"speaker": "customer", "timestamp": "3:15", "text": "No, that covers it. Thanks Priya."},
+    {"speaker": "agent", "timestamp": "3:18", "text": "You're welcome, Ravi. Your reference number for this case is TKT-48291. I'll email you when the quality rating recovers. Have a great day!"},
+    {"speaker": "customer", "timestamp": "3:26", "text": "Thanks, bye."},
+    {"speaker": "agent", "timestamp": "3:28", "text": "Bye!"}
+  ]
+}

@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto QA & Call Grading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0d0f;
+  --bg-raised: #141518;
+  --bg-card: #1a1b1f;
+  --bg-hover: #222328;
+  --border: #2a2b30;
+  --border-light: #35363c;
+  --text: #e8e6e1;
+  --text-muted: #8a8880;
+  --text-dim: #5c5a55;
+  --accent: #d4a053;
+  --accent-glow: #d4a05330;
+  --green: #4ade80;
+  --green-bg: #4ade8015;
+  --yellow: #fbbf24;
+  --yellow-bg: #fbbf2415;
+  --red: #f87171;
+  --red-bg: #f8717115;
+  --blue: #60a5fa;
+  --blue-bg: #60a5fa15;
+  --purple: #a78bfa;
+  --purple-bg: #a78bfa15;
+  --font-display: 'Instrument Serif', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-xs: 6px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* --- Layout --- */
+.shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  background: var(--bg-raised);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--accent), #b8862d);
+  border-radius: var(--radius-xs);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; color: var(--bg);
+}
+
+.sidebar-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-nav { flex: 1; padding: 16px 12px; }
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  padding: 8px 12px 6px;
+  margin-top: 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  margin-bottom: 2px;
+}
+
+.nav-item:hover { background: var(--bg-hover); color: var(--text); }
+.nav-item.active { background: var(--accent-glow); color: var(--accent); font-weight: 500; }
+
+.nav-icon { width: 18px; text-align: center; font-size: 15px; }
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-muted);
+}
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--text-dim);
+}
+.status-dot.connected { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.status-dot.error { background: var(--red); }
+
+/* --- Content Area --- */
+.content {
+  overflow-y: auto;
+  max-height: 100vh;
+  padding: 32px 40px;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.page-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+.btn-primary:hover { background: #e0ad5e; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--bg-hover); border-color: var(--border-light); }
+
+.btn-danger {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid #f8717130;
+}
+.btn-danger:hover { background: #f8717125; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  padding: 6px 12px;
+}
+.btn-ghost:hover { color: var(--text); background: var(--bg-hover); }
+
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* --- Cards --- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.card-header h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* --- Form Inputs --- */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8880' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.form-check input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+/* --- Badges --- */
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 10px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge-yes { background: var(--green-bg); color: var(--green); }
+.badge-no { background: var(--red-bg); color: var(--red); }
+.badge-na { background: var(--bg); color: var(--text-dim); }
+.badge-likert-2 { background: var(--green-bg); color: var(--green); }
+.badge-likert-1 { background: var(--yellow-bg); color: var(--yellow); }
+.badge-likert-0 { background: var(--red-bg); color: var(--red); }
+.badge-critical { background: var(--red-bg); color: var(--red); font-size: 10px; }
+.badge-score { background: var(--bg); color: var(--text-muted); font-family: var(--font-mono); font-size: 11px; }
+.badge-method { font-size: 10px; color: var(--text-dim); background: var(--bg); padding: 3px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.badge-binary { background: var(--blue-bg); color: var(--blue); }
+.badge-likert { background: var(--purple-bg); color: var(--purple); }
+
+.badge-confidence { font-family: var(--font-mono); font-size: 11px; padding: 3px 8px; border-radius: 10px; }
+.badge-confidence.high { background: var(--green-bg); color: var(--green); }
+.badge-confidence.mid { background: var(--yellow-bg); color: var(--yellow); }
+.badge-confidence.low { background: var(--red-bg); color: var(--red); }
+
+/* --- Template Questions Picker --- */
+.template-picker {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.template-category {
+  border-bottom: 1px solid var(--border);
+}
+
+.template-category:last-child { border-bottom: none; }
+
+.template-category-header {
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.15s;
+}
+
+.template-category-header:hover { background: var(--bg-hover); }
+
+.template-category-body { display: none; }
+.template-category.open .template-category-body { display: block; }
+
+.template-question-item {
+  padding: 10px 16px 10px 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.template-question-item:hover { background: var(--bg-hover); }
+.template-question-item.selected { background: var(--accent-glow); }
+
+.template-question-item input[type="checkbox"] {
+  accent-color: var(--accent);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.template-question-meta {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* --- Score Cards Grid --- */
+.score-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.score-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.score-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.score-card.primary::before { background: var(--accent); }
+.score-card.green::before { background: var(--green); }
+.score-card.blue::before { background: var(--blue); }
+.score-card.red::before { background: var(--red); }
+
+.score-card-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+.score-card-value {
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.score-card-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+
+/* --- Dashboard Table --- */
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dashboard-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dashboard-table tr {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dashboard-table tbody tr:hover { background: var(--bg-hover); }
+
+.score-pill {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.score-pill.high { background: var(--green-bg); color: var(--green); }
+.score-pill.mid { background: var(--yellow-bg); color: var(--yellow); }
+.score-pill.low { background: var(--red-bg); color: var(--red); }
+
+/* --- Critical Fail Banner --- */
+.critical-banner {
+  background: var(--red-bg);
+  border: 1px solid #f8717140;
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.critical-banner-icon {
+  width: 28px; height: 28px;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.critical-banner strong { color: var(--red); }
+
+/* --- Form Score Bars --- */
+.form-score-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 8px;
+}
+
+.form-score-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.form-score-name { font-weight: 500; }
+.form-score-pct { color: var(--accent); font-family: var(--font-mono); font-size: 13px; }
+
+.form-score-track {
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.form-score-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), #e0ad5e);
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- Question Rows --- */
+.section-group { margin-bottom: 24px; }
+
+.section-group-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-group-header h3 { font-size: 15px; font-weight: 600; }
+.section-group-header .section-badge {
+  font-size: 11px; color: var(--text-dim);
+  background: var(--bg); padding: 2px 8px; border-radius: 10px;
+}
+
+.question-row {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+}
+
+.question-row:hover { border-color: var(--border-light); }
+.question-row.critical-failed { border-color: #f8717140; }
+
+.question-row-main {
+  padding: 16px 20px;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: start;
+}
+
+.question-text { font-size: 14px; line-height: 1.5; }
+
+.question-badges {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+
+.question-detail {
+  display: none;
+  padding: 0 20px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.question-row.expanded .question-detail { display: block; padding-top: 16px; }
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.detail-item label {
+  display: block; font-size: 11px; font-weight: 500;
+  color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 4px;
+}
+
+.detail-item span { font-size: 13px; }
+
+.reasoning-box {
+  background: var(--bg);
+  border-radius: var(--radius-xs);
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  border-left: 3px solid var(--accent);
+}
+
+.reasoning-box strong {
+  color: var(--text);
+  display: block; font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+/* --- Transcript Panel (results view) --- */
+.results-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 0;
+  margin: -32px -40px;
+  min-height: 100vh;
+}
+
+.results-main {
+  padding: 32px 40px;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.transcript-panel {
+  border-left: 1px solid var(--border);
+  background: var(--bg-raised);
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.transcript-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.transcript-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px;
+}
+
+.utterance { margin-bottom: 16px; }
+
+.utterance-header {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+
+.speaker-tag {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 2px 8px; border-radius: 4px;
+}
+
+.speaker-tag.agent { background: var(--blue-bg); color: var(--blue); }
+.speaker-tag.customer { background: var(--bg-card); color: var(--text-muted); }
+
+.utterance-time { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+
+.utterance-text {
+  font-size: 13px; line-height: 1.6; color: var(--text-muted); padding-left: 4px;
+}
+
+.utterance.highlighted .utterance-text {
+  color: var(--text);
+  background: var(--accent-glow);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border-left: 2px solid var(--accent);
+}
+
+/* --- Grading Overlay --- */
+.grading-overlay {
+  position: fixed; inset: 0;
+  background: rgba(12, 13, 15, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.grading-overlay.active { opacity: 1; pointer-events: all; }
+
+.grading-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 48px;
+  text-align: center;
+  max-width: 420px;
+}
+
+.grading-spinner {
+  width: 48px; height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 24px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.grading-modal h2 {
+  font-family: var(--font-display);
+  font-size: 22px; margin-bottom: 8px;
+}
+
+.grading-modal p { color: var(--text-muted); font-size: 14px; }
+
+.grading-steps { margin-top: 24px; text-align: left; }
+
+.grading-step {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; font-size: 13px; color: var(--text-dim);
+  transition: color 0.3s;
+}
+.grading-step.active { color: var(--accent); }
+.grading-step.done { color: var(--green); }
+
+.grading-step-icon {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; flex-shrink: 0;
+}
+
+/* --- Empty state --- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  text-align: center;
+}
+
+.empty-state-icon {
+  width: 64px; height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent-glow), transparent);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin-bottom: 20px;
+}
+
+.empty-state h2 {
+  font-family: var(--font-display);
+  font-size: 22px; margin-bottom: 8px;
+}
+
+.empty-state p {
+  color: var(--text-muted); font-size: 14px;
+  max-width: 400px; margin-bottom: 20px;
+}
+
+/* --- Toast --- */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-size: 14px;
+  z-index: 300;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.toast.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+.toast.success { border-color: var(--green); }
+.toast.error { border-color: var(--red); color: var(--red); }
+
+/* --- Scorecard Builder --- */
+.scorecard-form-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.form-chip {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.form-chip:hover { border-color: var(--border-light); }
+.form-chip.selected { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+
+.mapping-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mapping-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mapping-table td {
+  padding: 10px 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mapping-table input {
+  width: 60px;
+  padding: 4px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+}
+
+.mapping-table input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+/* --- Animations --- */
+.fade-in { animation: fadeIn 0.4s ease both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .results-layout { grid-template-columns: 1fr; }
+  .transcript-panel { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">QA</div>
+      <span class="sidebar-title">Auto QA</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" data-view="dashboard" onclick="navigate('dashboard')">
+        <span class="nav-icon">&#9632;</span> Dashboard
+      </div>
+      <div class="nav-section-label">Build</div>
+      <div class="nav-item" data-view="forms" onclick="navigate('forms')">
+        <span class="nav-icon">&#9997;</span> Evaluation Forms
+      </div>
+      <div class="nav-item" data-view="scorecards" onclick="navigate('scorecards')">
+        <span class="nav-icon">&#9733;</span> Scorecards
+      </div>
+      <div class="nav-section-label">Run</div>
+      <div class="nav-item" data-view="grade" onclick="navigate('grade')">
+        <span class="nav-icon">&#9654;</span> Grade Transcript
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Checking...</span>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="content"></div>
+</div>
+
+<!-- Grading Overlay -->
+<div class="grading-overlay" id="gradingOverlay">
+  <div class="grading-modal">
+    <div class="grading-spinner"></div>
+    <h2>Grading Call</h2>
+    <p>AI is evaluating the transcript against the scorecard</p>
+    <div class="grading-steps">
+      <div class="grading-step" id="step-keyword"><div class="grading-step-icon"></div>Keyword matching</div>
+      <div class="grading-step" id="step-haiku"><div class="grading-step-icon"></div>Binary questions (Haiku)</div>
+      <div class="grading-step" id="step-sonnet"><div class="grading-step-icon"></div>Likert questions (Sonnet)</div>
+      <div class="grading-step" id="step-scoring"><div class="grading-step-icon"></div>Computing scores</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';
+
+// --- State ---
+let templates = [];
+let forms = [];
+let scorecards = [];
+let results = [];
+let currentView = 'dashboard';
+
+// --- Init ---
+async function init() {
+  checkHealth();
+  await Promise.all([loadTemplates(), loadForms(), loadScorecards(), loadResults()]);
+  navigate('dashboard');
+}
+
+async function checkHealth() {
+  try {
+    const res = await fetch(`${API}/api/health`);
+    const data = await res.json();
+    const dot = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    if (data.api_key_configured) {
+      dot.className = 'status-dot connected';
+      text.textContent = 'Connected';
+    } else {
+      dot.className = 'status-dot error';
+      text.textContent = 'No API key';
+    }
+  } catch (e) {
+    document.getElementById('statusDot').className = 'status-dot error';
+    document.getElementById('statusText').textContent = 'Offline';
+  }
+}
+
+async function loadTemplates() {
+  try { templates = await (await fetch(`${API}/api/templates`)).json(); } catch(e) { templates = []; }
+}
+
+async function loadForms() {
+  try { forms = await (await fetch(`${API}/api/forms`)).json(); } catch(e) { forms = []; }
+}
+
+async function loadScorecards() {
+  try { scorecards = await (await fetch(`${API}/api/scorecards`)).json(); } catch(e) { scorecards = []; }
+}
+
+async function loadResults() {
+  try { results = await (await fetch(`${API}/api/results`)).json(); } catch(e) { results = []; }
+}
+
+function showToast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast visible ${type}`;
+  setTimeout(() => el.className = 'toast', 3000);
+}
+
+// --- Navigation ---
+function navigate(view, data) {
+  currentView = view;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === view));
+
+  const content = document.getElementById('content');
+  switch (view) {
+    case 'dashboard': renderDashboard(content); break;
+    case 'forms': renderFormsListView(content); break;
+    case 'form-builder': renderFormBuilder(content, data); break;
+    case 'scorecards': renderScorecardsListView(content); break;
+    case 'scorecard-builder': renderScorecardBuilder(content, data); break;
+    case 'grade': renderGradeView(content); break;
+    case 'result-detail': renderResultDetail(content, data); break;
+  }
+  content.scrollTop = 0;
+}
+
+// ============================================================
+//  DASHBOARD VIEW
+// ============================================================
+function renderDashboard(el) {
+  let html = `
+    <div class="page-header">
+      <h1>Dashboard</h1>
+      <p>Overview of all graded transcripts</p>
+    </div>
+  `;
+
+  if (results.length === 0) {
+    html += `
+      <div class="empty-state">
+        <div class="empty-state-icon">&#9632;</div>
+        <h2>No grading results yet</h2>
+        <p>Create an evaluation form and scorecard, then grade a transcript to see results here.</p>
+        <button class="btn btn-primary" onclick="navigate('grade')">Grade a Transcript</button>
+      </div>
+    `;
+    el.innerHTML = html;
+    return;
+  }
+
+  // Stats
+  const avgScore = results.reduce((s, r) => s + r.final_score, 0) / results.length;
+  const critCount = results.filter(r => r.critical_fail_triggered).length;
+
+  html += `
+    <div class="score-cards">
+      <div class="score-card primary">
+        <div class="score-card-label">Total Graded</div>
+        <div class="score-card-value">${results.length}</div>
+        <div class="score-card-sub">transcripts</div>
+      </div>
+      <div class="score-card green">
+        <div class="score-card-label">Avg Score</div>
+        <div class="score-card-value">${avgScore.toFixed(1)}%</div>
+        <div class="score-card-sub">across all calls</div>
+      </div>
+      <div class="score-card ${critCount > 0 ? 'red' : 'blue'}">
+        <div class="score-card-label">Critical Fails</div>
+        <div class="score-card-value">${critCount}</div>
+        <div class="score-card-sub">${critCount > 0 ? 'need review' : 'all clear'}</div>
+      </div>
+      <div class="score-card blue">
+        <div class="score-card-label">Scorecards</div>
+        <div class="score-card-value">${scorecards.length}</div>
+        <div class="score-card-sub">configured</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0; overflow:hidden;">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Call ID</th>
+            <th>Scorecard</th>
+            <th>Score</th>
+            <th>Questions</th>
+            <th>Critical</th>
+            <th>Graded</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  results.slice().reverse().forEach(r => {
+    const scoreClass = r.final_score >= 80 ? 'high' : r.final_score >= 60 ? 'mid' : 'low';
+    const date = r.graded_at ? new Date(r.graded_at).toLocaleDateString() : '';
+    html += `
+      <tr onclick="viewResult('${r.result_id}')">
+        <td><strong>${r.agent_name || 'Unknown'}</strong></td>
+        <td style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">${r.call_id}</td>
+        <td>${r.scorecard_name}</td>
+        <td><span class="score-pill ${scoreClass}">${r.final_score}%</span></td>
+        <td>${r.questions_graded}/${r.questions_count}</td>
+        <td>${r.critical_fail_triggered ? '<span class="badge badge-critical">FAIL</span>' : '<span style="color:var(--green)">-</span>'}</td>
+        <td style="color:var(--text-muted)">${date}</td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table></div>`;
+  el.innerHTML = html;
+}
+
+async function viewResult(resultId) {
+  try {
+    const result = await (await fetch(`${API}/api/results/${resultId}`)).json();
+    navigate('result-detail', result);
+  } catch(e) {
+    showToast('Failed to load result', 'error');
+  }
+}
+
+// ============================================================
+//  RESULT DETAIL VIEW
+// ============================================================
+function renderResultDetail(el, data) {
+  const meta = data.transcript_data?.call_metadata || {};
+  const mins = Math.floor((meta.duration_seconds || 0) / 60);
+  const secs = (meta.duration_seconds || 0) % 60;
+
+  const scored = data.question_results.filter(q => q.answer !== 'N/A');
+  const naCount = data.question_results.length - scored.length;
+  const avgConf = scored.length > 0
+    ? Math.round(scored.reduce((s, q) => s + q.confidence, 0) / scored.length)
+    : 0;
+
+  let mainHtml = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+      <button class="btn btn-ghost" onclick="navigate('dashboard')">&larr; Back</button>
+      <div>
+        <h1 style="font-family:var(--font-display);font-size:24px">${data.scorecard_name}</h1>
+        <div style="display:flex;gap:16px;font-size:13px;color:var(--text-muted)">
+          <span>Agent: <strong>${meta.agent_name || 'Unknown'}</strong></span>
+          <span>Call: <strong style="font-family:var(--font-mono);font-size:12px">${meta.call_id || ''}</strong></span>
+          <span>Duration: <strong>${mins}m ${secs}s</strong></span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (data.critical_fail_triggered) {
+    const behavior = data.critical_fail_behavior === 'zero' ? 'Score zeroed' : 'Flagged for review';
+    mainHtml += `
+      <div class="critical-banner">
+        <div class="critical-banner-icon">!</div>
+        <div><strong>Critical Fail Triggered</strong> &mdash; ${behavior}. Questions: ${data.critical_fail_questions.join(', ')}</div>
+      </div>
+    `;
+  }
+
+  mainHtml += `
+    <div class="score-cards">
+      <div class="score-card primary">
+        <div class="score-card-label">Final Score</div>
+        <div class="score-card-value">${data.final_score}%</div>
+      </div>
+      <div class="score-card green">
+        <div class="score-card-label">Graded</div>
+        <div class="score-card-value">${scored.length}<span style="font-size:16px;color:var(--text-dim)">/${data.question_results.length}</span></div>
+        <div class="score-card-sub">${naCount} N/A</div>
+      </div>
+      <div class="score-card ${data.critical_fail_triggered ? 'red' : 'blue'}">
+        <div class="score-card-label">Critical Fails</div>
+        <div class="score-card-value">${data.critical_fail_questions.length}</div>
+      </div>
+      <div class="score-card blue">
+        <div class="score-card-label">Avg Confidence</div>
+        <div class="score-card-value">${avgConf}%</div>
+      </div>
+    </div>
+  `;
+
+  // Form sub-scores
+  if (data.form_scores && data.form_scores.length > 0) {
+    mainHtml += `<h2 style="font-family:var(--font-display);font-size:18px;margin-bottom:12px">Form Scores</h2>`;
+    data.form_scores.forEach(fs => {
+      mainHtml += `
+        <div class="form-score-bar">
+          <div class="form-score-header">
+            <span class="form-score-name">${fs.form_name}</span>
+            <span class="form-score-pct">${fs.points_earned}/${fs.points_possible} (${fs.percentage}%)</span>
+          </div>
+          <div class="form-score-track">
+            <div class="form-score-fill" style="width:0%" data-width="${fs.percentage}%"></div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // Question breakdown by section
+  const sections = {};
+  data.question_results.forEach(qr => {
+    const sec = qr.section || 'General';
+    if (!sections[sec]) sections[sec] = [];
+    sections[sec].push(qr);
+  });
+
+  mainHtml += `<h2 style="font-family:var(--font-display);font-size:18px;margin:24px 0 12px">Question Breakdown</h2>`;
+
+  Object.entries(sections).forEach(([secName, questions]) => {
+    mainHtml += `
+      <div class="section-group">
+        <div class="section-group-header">
+          <h3>${secName}</h3>
+          <span class="section-badge">${questions.length} questions</span>
+        </div>
+    `;
+
+    questions.forEach(qr => {
+      const answerBadge = getAnswerBadge(qr);
+      const confClass = qr.confidence >= 70 ? 'high' : qr.confidence >= 50 ? 'mid' : 'low';
+      const isCritFailed = qr.critical_fail_flag && (qr.answer === 'No' || qr.answer === '0');
+      const scoreText = qr.answer !== 'N/A' ? `${qr.points_earned}/${qr.points_possible}` : 'N/A';
+
+      mainHtml += `
+        <div class="question-row ${isCritFailed ? 'critical-failed' : ''}" onclick="this.classList.toggle('expanded')">
+          <div class="question-row-main">
+            <div class="question-text">${qr.question_text}</div>
+            <div class="question-badges">
+              ${qr.critical_fail_flag ? '<span class="badge badge-critical">CRITICAL</span>' : ''}
+              ${answerBadge}
+              <span class="badge badge-score">${scoreText}</span>
+              <span class="badge-confidence ${confClass}">${qr.confidence}%</span>
+              <span class="badge-method">${formatMethod(qr.method)}</span>
+            </div>
+          </div>
+          <div class="question-detail">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <label>Decision Stage</label>
+                <span>Stage ${qr.decision_stage} &mdash; ${stageLabel(qr.decision_stage)}</span>
+              </div>
+              <div class="detail-item">
+                <label>Evidence</label>
+                <span>${qr.transcript_evidence || 'None'}</span>
+              </div>
+            </div>
+            <div class="reasoning-box">
+              <strong>AI Reasoning</strong>
+              ${qr.reasoning}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    mainHtml += `</div>`;
+  });
+
+  // Build transcript panel HTML
+  let transcriptHtml = '';
+  if (data.transcript_data && data.transcript_data.transcript) {
+    const evidenceTimestamps = new Set();
+    data.question_results.forEach(qr => {
+      if (qr.transcript_evidence) {
+        qr.transcript_evidence.split(',').forEach(t => {
+          evidenceTimestamps.add(t.trim().split(' - ')[0].trim().split(' ')[0]);
+        });
+      }
+    });
+
+    data.transcript_data.transcript.forEach(u => {
+      const isHighlighted = evidenceTimestamps.has(u.timestamp);
+      transcriptHtml += `
+        <div class="utterance ${isHighlighted ? 'highlighted' : ''}">
+          <div class="utterance-header">
+            <span class="speaker-tag ${u.speaker}">${u.speaker}</span>
+            <span class="utterance-time">${u.timestamp}</span>
+          </div>
+          <div class="utterance-text">${escapeHtml(u.text)}</div>
+        </div>
+      `;
+    });
+  }
+
+  el.innerHTML = `
+    <div class="results-layout">
+      <div class="results-main">${mainHtml}</div>
+      <div class="transcript-panel">
+        <div class="transcript-header">Transcript</div>
+        <div class="transcript-body">${transcriptHtml}</div>
+      </div>
+    </div>
+  `;
+
+  // Animate fill bars
+  requestAnimationFrame(() => {
+    el.querySelectorAll('.form-score-fill').forEach(bar => {
+      bar.style.width = bar.dataset.width;
+    });
+  });
+}
+
+// ============================================================
+//  FORMS LIST VIEW
+// ============================================================
+function renderFormsListView(el) {
+  let html = `
+    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <h1>Evaluation Forms</h1>
+        <p>Create and manage evaluation forms with questions</p>
+      </div>
+      <button class="btn btn-primary" onclick="navigate('form-builder')">+ New Form</button>
+    </div>
+  `;
+
+  if (forms.length === 0) {
+    html += `
+      <div class="empty-state">
+        <div class="empty-state-icon">&#9997;</div>
+        <h2>No forms yet</h2>
+        <p>Create your first evaluation form to define the questions used to grade call transcripts.</p>
+        <button class="btn btn-primary" onclick="navigate('form-builder')">Create Form</button>
+      </div>
+    `;
+  } else {
+    forms.forEach(form => {
+      const qCount = form.sections.reduce((c, s) => c + s.questions.length, 0);
+      html += `
+        <div class="card" style="cursor:pointer" onclick="navigate('form-builder', ${JSON.stringify(form).replace(/"/g, '&quot;')})">
+          <div class="card-header">
+            <h3>${escapeHtml(form.name)}</h3>
+            <div class="btn-group">
+              <span class="badge badge-score">${form.form_id}</span>
+              <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteForm('${form.form_id}')">Delete</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;font-size:13px;color:var(--text-muted)">
+            <span>${form.sections.length} sections</span>
+            <span>${qCount} questions</span>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  el.innerHTML = html;
+}
+
+async function deleteForm(formId) {
+  if (!confirm('Delete this form?')) return;
+  await fetch(`${API}/api/forms/${formId}`, { method: 'DELETE' });
+  await loadForms();
+  navigate('forms');
+  showToast('Form deleted');
+}
+
+// ============================================================
+//  FORM BUILDER VIEW
+// ============================================================
+function renderFormBuilder(el, existingForm) {
+  const isEdit = !!existingForm;
+  const form = existingForm || { form_id: '', name: '', sections: [] };
+
+  let html = `
+    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <h1>${isEdit ? 'Edit Form' : 'New Evaluation Form'}</h1>
+        <p>${isEdit ? 'Modify your form questions and settings' : 'Build a form from scratch or pull in template questions'}</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="navigate('forms')">&larr; Back</button>
+        <button class="btn btn-primary" id="btnSaveForm">Save Form</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="form-group">
+        <label>Form Name</label>
+        <input class="form-input" id="formName" value="${escapeHtml(form.name)}" placeholder="e.g., Support Calls - Template B">
+      </div>
+      <div class="form-group">
+        <label>Form ID (auto-generated if empty)</label>
+        <input class="form-input" id="formId" value="${escapeHtml(form.form_id)}" placeholder="form_support_v1" ${isEdit ? 'readonly style="opacity:0.6"' : ''}>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <!-- Template Questions -->
+      <div>
+        <h2 style="font-family:var(--font-display);font-size:18px;margin-bottom:12px">Template Questions</h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Select questions to add to your form</p>
+        <div class="template-picker" id="templatePicker"></div>
+        <button class="btn btn-secondary" id="btnAddSelected" style="width:100%">Add Selected to Form &rarr;</button>
+      </div>
+
+      <!-- Form Sections & Questions -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <h2 style="font-family:var(--font-display);font-size:18px">Form Sections</h2>
+          <button class="btn btn-secondary btn-sm" id="btnAddSection">+ Add Section</button>
+        </div>
+        <div id="formSections"></div>
+      </div>
+    </div>
+  `;
+
+  el.innerHTML = html;
+
+  // Render template picker
+  renderTemplatePicker();
+
+  // Render existing sections
+  window._formSections = JSON.parse(JSON.stringify(form.sections || []));
+  renderFormSections();
+
+  // Bind events
+  document.getElementById('btnAddSelected').onclick = addSelectedTemplatesToForm;
+  document.getElementById('btnAddSection').onclick = () => {
+    window._formSections.push({ name: '', description: '', questions: [] });
+    renderFormSections();
+  };
+  document.getElementById('btnSaveForm').onclick = saveCurrentForm;
+}
+
+function renderTemplatePicker() {
+  const picker = document.getElementById('templatePicker');
+  let html = '';
+  templates.forEach((cat, ci) => {
+    html += `
+      <div class="template-category" data-cat="${ci}">
+        <div class="template-category-header" onclick="this.parentElement.classList.toggle('open')">
+          <span>${cat.category}</span>
+          <span style="font-size:12px;color:var(--text-dim)">${cat.questions.length} questions</span>
+        </div>
+        <div class="template-category-body">
+    `;
+    cat.questions.forEach((q, qi) => {
+      const typeLabel = q.answer_type === 'binary' ? 'Binary' : 'Likert 0-2';
+      const typeBadge = q.answer_type === 'binary' ? 'badge-binary' : 'badge-likert';
+      html += `
+        <div class="template-question-item" onclick="toggleTemplateSelect(this, event)">
+          <input type="checkbox" data-cat="${ci}" data-q="${qi}" onclick="event.stopPropagation(); this.closest('.template-question-item').classList.toggle('selected', this.checked)">
+          <div>
+            <div>${q.question_text}</div>
+            <div class="template-question-meta">
+              <span class="badge ${typeBadge}">${typeLabel}</span>
+              ${q.critical_fail ? '<span class="badge badge-critical">CRITICAL</span>' : ''}
+              <span class="badge badge-method">${q.matching_method}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    html += `</div></div>`;
+  });
+  picker.innerHTML = html;
+}
+
+function toggleTemplateSelect(item, event) {
+  const cb = item.querySelector('input[type="checkbox"]');
+  // Checkbox handles its own click via stopPropagation, so this only fires for row clicks
+  cb.checked = !cb.checked;
+  item.classList.toggle('selected', cb.checked);
+}
+
+function addSelectedTemplatesToForm() {
+  const checked = document.querySelectorAll('#templatePicker input[type="checkbox"]:checked');
+  if (checked.length === 0) { showToast('No questions selected', 'error'); return; }
+
+  // Group by category
+  const byCategory = {};
+  checked.forEach(cb => {
+    const ci = parseInt(cb.dataset.cat);
+    const qi = parseInt(cb.dataset.q);
+    const cat = templates[ci];
+    if (!byCategory[cat.category]) byCategory[cat.category] = [];
+    byCategory[cat.category].push(JSON.parse(JSON.stringify(cat.questions[qi])));
+    cb.checked = false;
+    cb.closest('.template-question-item').classList.remove('selected');
+  });
+
+  // Add to existing sections or create new ones
+  Object.entries(byCategory).forEach(([catName, questions]) => {
+    let section = window._formSections.find(s => s.name === catName);
+    if (!section) {
+      section = { name: catName, description: '', questions: [] };
+      window._formSections.push(section);
+    }
+    section.questions.push(...questions);
+  });
+
+  renderFormSections();
+  showToast(`Added ${checked.length} questions`);
+}
+
+function renderFormSections() {
+  const container = document.getElementById('formSections');
+  if (window._formSections.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="min-height:20vh">
+        <p style="color:var(--text-dim);font-size:13px">No sections yet. Add from templates or create a new section.</p>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+  window._formSections.forEach((section, si) => {
+    html += `
+      <div class="card">
+        <div class="card-header">
+          <input class="form-input" value="${escapeHtml(section.name)}" placeholder="Section name"
+                 style="font-weight:600;background:transparent;border:none;padding:0;font-size:15px;width:auto;flex:1"
+                 onchange="window._formSections[${si}].name=this.value">
+          <div class="btn-group">
+            <button class="btn btn-ghost btn-sm" onclick="addQuestionToSection(${si})">+ Question</button>
+            <button class="btn btn-danger btn-sm" onclick="removeSection(${si})">Remove</button>
+          </div>
+        </div>
+    `;
+
+    section.questions.forEach((q, qi) => {
+      const typeLabel = q.answer_type === 'binary' ? 'Binary' : 'Likert 0-2';
+      const typeBadge = q.answer_type === 'binary' ? 'badge-binary' : 'badge-likert';
+      html += `
+        <div style="padding:10px 0;border-top:1px solid var(--border);display:flex;align-items:flex-start;gap:10px">
+          <div style="flex:1">
+            <div style="font-size:13px;margin-bottom:4px">${escapeHtml(q.question_text)}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="badge ${typeBadge}">${typeLabel}</span>
+              ${q.critical_fail ? '<span class="badge badge-critical">CRITICAL</span>' : ''}
+              <span class="badge badge-method">${q.matching_method}</span>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="editQuestion(${si},${qi})" style="font-size:11px">Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="removeQuestion(${si},${qi})" style="font-size:11px;color:var(--red)">X</button>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function removeSection(si) {
+  window._formSections.splice(si, 1);
+  renderFormSections();
+}
+
+function removeQuestion(si, qi) {
+  window._formSections[si].questions.splice(qi, 1);
+  renderFormSections();
+}
+
+function addQuestionToSection(si) {
+  window._formSections[si].questions.push({
+    question_text: '',
+    answer_type: 'binary',
+    matching_method: 'llm',
+    keywords: [],
+    answer_definitions: { Yes: '', No: '' },
+    default_answer: null,
+    na_eligible: true,
+    critical_fail: false,
+    examples: []
+  });
+  renderFormSections();
+  // Open edit for the new question
+  const qi = window._formSections[si].questions.length - 1;
+  setTimeout(() => editQuestion(si, qi), 50);
+}
+
+function editQuestion(si, qi) {
+  const q = window._formSections[si].questions[qi];
+
+  // Build definition fields based on answer type
+  let defFields = '';
+  if (q.answer_type === 'binary') {
+    defFields = `
+      <div class="form-group">
+        <label>"Yes" Definition</label>
+        <textarea class="form-textarea" id="eq_def_yes" rows="2">${escapeHtml(q.answer_definitions?.Yes || '')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>"No" Definition</label>
+        <textarea class="form-textarea" id="eq_def_no" rows="2">${escapeHtml(q.answer_definitions?.No || '')}</textarea>
+      </div>
+    `;
+  } else {
+    defFields = `
+      <div class="form-group">
+        <label>"0" Definition</label>
+        <textarea class="form-textarea" id="eq_def_0" rows="2">${escapeHtml(q.answer_definitions?.['0'] || '')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>"1" Definition</label>
+        <textarea class="form-textarea" id="eq_def_1" rows="2">${escapeHtml(q.answer_definitions?.['1'] || '')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>"2" Definition</label>
+        <textarea class="form-textarea" id="eq_def_2" rows="2">${escapeHtml(q.answer_definitions?.['2'] || '')}</textarea>
+      </div>
+    `;
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'grading-overlay active';
+  overlay.style.alignItems = 'flex-start';
+  overlay.style.paddingTop = '60px';
+  overlay.innerHTML = `
+    <div class="grading-modal" style="text-align:left;max-width:600px;width:100%;padding:32px;max-height:80vh;overflow-y:auto">
+      <h2 style="margin-bottom:20px">Edit Question</h2>
+
+      <div class="form-group">
+        <label>Question Text</label>
+        <textarea class="form-textarea" id="eq_text" rows="2">${escapeHtml(q.question_text)}</textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Answer Type</label>
+          <select class="form-select" id="eq_type">
+            <option value="binary" ${q.answer_type === 'binary' ? 'selected' : ''}>Binary (Yes/No)</option>
+            <option value="likert_0_2" ${q.answer_type === 'likert_0_2' ? 'selected' : ''}>Likert (0-2)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Matching Method</label>
+          <select class="form-select" id="eq_method">
+            <option value="llm" ${q.matching_method === 'llm' ? 'selected' : ''}>LLM</option>
+            <option value="keyword" ${q.matching_method === 'keyword' ? 'selected' : ''}>Keyword</option>
+            <option value="hybrid" ${q.matching_method === 'hybrid' ? 'selected' : ''}>Hybrid</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Keywords (comma-separated, for keyword/hybrid)</label>
+        <input class="form-input" id="eq_keywords" value="${escapeHtml((q.keywords || []).join(', '))}">
+      </div>
+
+      <div id="eq_definitions">${defFields}</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Default Answer</label>
+          <input class="form-input" id="eq_default" value="${escapeHtml(q.default_answer || '')}" placeholder="null">
+        </div>
+        <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end">
+          <label class="form-check">
+            <input type="checkbox" id="eq_na" ${q.na_eligible ? 'checked' : ''}> N/A Eligible
+          </label>
+          <label class="form-check" style="margin-top:8px">
+            <input type="checkbox" id="eq_critical" ${q.critical_fail ? 'checked' : ''}> Critical Fail
+          </label>
+        </div>
+      </div>
+
+      <div class="btn-group" style="margin-top:20px;justify-content:flex-end">
+        <button class="btn btn-secondary" id="eq_cancel">Cancel</button>
+        <button class="btn btn-primary" id="eq_save">Save Question</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  // Handle answer type change
+  document.getElementById('eq_type').onchange = function() {
+    const defsEl = document.getElementById('eq_definitions');
+    if (this.value === 'binary') {
+      defsEl.innerHTML = `
+        <div class="form-group">
+          <label>"Yes" Definition</label>
+          <textarea class="form-textarea" id="eq_def_yes" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>"No" Definition</label>
+          <textarea class="form-textarea" id="eq_def_no" rows="2"></textarea>
+        </div>
+      `;
+    } else {
+      defsEl.innerHTML = `
+        <div class="form-group">
+          <label>"0" Definition</label>
+          <textarea class="form-textarea" id="eq_def_0" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>"1" Definition</label>
+          <textarea class="form-textarea" id="eq_def_1" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>"2" Definition</label>
+          <textarea class="form-textarea" id="eq_def_2" rows="2"></textarea>
+        </div>
+      `;
+    }
+  };
+
+  document.getElementById('eq_cancel').onclick = () => overlay.remove();
+
+  document.getElementById('eq_save').onclick = () => {
+    const answerType = document.getElementById('eq_type').value;
+    let defs = {};
+    if (answerType === 'binary') {
+      defs = {
+        Yes: document.getElementById('eq_def_yes').value,
+        No: document.getElementById('eq_def_no').value
+      };
+    } else {
+      defs = {
+        '0': document.getElementById('eq_def_0').value,
+        '1': document.getElementById('eq_def_1').value,
+        '2': document.getElementById('eq_def_2').value
+      };
+    }
+
+    const kw = document.getElementById('eq_keywords').value;
+
+    window._formSections[si].questions[qi] = {
+      ...q,
+      question_text: document.getElementById('eq_text').value,
+      answer_type: answerType,
+      matching_method: document.getElementById('eq_method').value,
+      keywords: kw ? kw.split(',').map(k => k.trim()).filter(Boolean) : [],
+      answer_definitions: defs,
+      default_answer: document.getElementById('eq_default').value || null,
+      na_eligible: document.getElementById('eq_na').checked,
+      critical_fail: document.getElementById('eq_critical').checked,
+      examples: q.examples || []
+    };
+
+    overlay.remove();
+    renderFormSections();
+    showToast('Question updated');
+  };
+}
+
+async function saveCurrentForm() {
+  const name = document.getElementById('formName').value.trim();
+  if (!name) { showToast('Form name is required', 'error'); return; }
+  if (window._formSections.length === 0) { showToast('Add at least one section', 'error'); return; }
+
+  const formData = {
+    form_id: document.getElementById('formId').value.trim(),
+    name: name,
+    sections: window._formSections
+  };
+
+  try {
+    const res = await fetch(`${API}/api/forms`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    if (!res.ok) throw new Error('Failed to save');
+    await loadForms();
+    showToast('Form saved');
+    navigate('forms');
+  } catch(e) {
+    showToast('Error saving form: ' + e.message, 'error');
+  }
+}
+
+// ============================================================
+//  SCORECARDS LIST VIEW
+// ============================================================
+function renderScorecardsListView(el) {
+  let html = `
+    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <h1>Scorecards</h1>
+        <p>Create scorecards that map evaluation form questions to point values</p>
+      </div>
+      <button class="btn btn-primary" onclick="navigate('scorecard-builder')">+ New Scorecard</button>
+    </div>
+  `;
+
+  if (scorecards.length === 0) {
+    html += `
+      <div class="empty-state">
+        <div class="empty-state-icon">&#9733;</div>
+        <h2>No scorecards yet</h2>
+        <p>Create a scorecard to define how evaluation form questions are scored.</p>
+        <button class="btn btn-primary" onclick="navigate('scorecard-builder')">Create Scorecard</button>
+      </div>
+    `;
+  } else {
+    scorecards.forEach(sc => {
+      const formNames = (sc.form_ids || []).map(fid => {
+        const f = forms.find(f => f.form_id === fid);
+        return f ? f.name : fid;
+      }).join(', ');
+      html += `
+        <div class="card" style="cursor:pointer" onclick="navigate('scorecard-builder', ${JSON.stringify(sc).replace(/"/g, '&quot;')})">
+          <div class="card-header">
+            <h3>${escapeHtml(sc.name)}</h3>
+            <div class="btn-group">
+              <span class="badge badge-score">${sc.scorecard_id}</span>
+              <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteScorecard('${sc.scorecard_id}')">Delete</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;font-size:13px;color:var(--text-muted)">
+            <span>Forms: ${formNames || 'None'}</span>
+            <span>${(sc.score_mappings || []).length} score mappings</span>
+            <span>Critical fail: ${sc.critical_fail_behavior || 'flag'}</span>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  el.innerHTML = html;
+}
+
+async function deleteScorecard(scId) {
+  if (!confirm('Delete this scorecard?')) return;
+  await fetch(`${API}/api/scorecards/${scId}`, { method: 'DELETE' });
+  await loadScorecards();
+  navigate('scorecards');
+  showToast('Scorecard deleted');
+}
+
+// ============================================================
+//  SCORECARD BUILDER VIEW
+// ============================================================
+function renderScorecardBuilder(el, existingSc) {
+  const isEdit = !!existingSc;
+  const sc = existingSc || { scorecard_id: '', name: '', form_ids: [], score_mappings: [], critical_fail_behavior: 'flag', min_duration_seconds: 30 };
+
+  window._scFormIds = [...(sc.form_ids || [])];
+  window._scMappings = JSON.parse(JSON.stringify(sc.score_mappings || []));
+
+  let html = `
+    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <h1>${isEdit ? 'Edit Scorecard' : 'New Scorecard'}</h1>
+        <p>Select forms and assign point values to each question</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="navigate('scorecards')">&larr; Back</button>
+        <button class="btn btn-primary" id="btnSaveScorecard">Save Scorecard</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Scorecard Name</label>
+          <input class="form-input" id="scName" value="${escapeHtml(sc.name)}" placeholder="e.g., Support Team - Q2 2026">
+        </div>
+        <div class="form-group">
+          <label>Scorecard ID (auto-generated if empty)</label>
+          <input class="form-input" id="scId" value="${escapeHtml(sc.scorecard_id)}" ${isEdit ? 'readonly style="opacity:0.6"' : ''}>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Critical Fail Behavior</label>
+          <select class="form-select" id="scCritBehavior">
+            <option value="flag" ${sc.critical_fail_behavior === 'flag' ? 'selected' : ''}>Flag for review</option>
+            <option value="zero" ${sc.critical_fail_behavior === 'zero' ? 'selected' : ''}>Zero the score</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Min Duration (seconds)</label>
+          <input class="form-input" id="scMinDuration" type="number" value="${sc.min_duration_seconds || 30}">
+        </div>
+      </div>
+    </div>
+
+    <h2 style="font-family:var(--font-display);font-size:18px;margin-bottom:12px">Select Forms</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Choose which evaluation forms to include in this scorecard</p>
+    <div class="scorecard-form-selector" id="scFormSelector"></div>
+
+    <h2 style="font-family:var(--font-display);font-size:18px;margin:24px 0 12px">Score Mappings</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Assign point values for each answer option</p>
+    <div class="card" style="padding:0;overflow:hidden" id="scMappingsContainer"></div>
+  `;
+
+  el.innerHTML = html;
+  renderScFormSelector();
+  renderScMappings();
+
+  document.getElementById('btnSaveScorecard').onclick = saveCurrentScorecard;
+}
+
+function renderScFormSelector() {
+  const container = document.getElementById('scFormSelector');
+  if (forms.length === 0) {
+    container.innerHTML = '<p style="font-size:13px;color:var(--text-dim)">No forms created yet. Create a form first.</p>';
+    return;
+  }
+
+  container.innerHTML = forms.map(f => `
+    <div class="form-chip ${window._scFormIds.includes(f.form_id) ? 'selected' : ''}"
+         onclick="toggleScForm('${f.form_id}')">
+      ${escapeHtml(f.name)}
+    </div>
+  `).join('');
+}
+
+function toggleScForm(formId) {
+  const idx = window._scFormIds.indexOf(formId);
+  if (idx >= 0) {
+    window._scFormIds.splice(idx, 1);
+    // Remove mappings for questions from this form
+    const form = forms.find(f => f.form_id === formId);
+    if (form) {
+      const qIds = new Set();
+      form.sections.forEach(s => s.questions.forEach(q => qIds.add(q.question_id)));
+      window._scMappings = window._scMappings.filter(m => !qIds.has(m.question_id));
+    }
+  } else {
+    window._scFormIds.push(formId);
+    // Auto-generate default mappings for questions
+    const form = forms.find(f => f.form_id === formId);
+    if (form) {
+      form.sections.forEach(s => s.questions.forEach(q => {
+        if (!window._scMappings.find(m => m.question_id === q.question_id)) {
+          if (q.answer_type === 'binary') {
+            window._scMappings.push({ question_id: q.question_id, scores: { Yes: 5, No: 0 } });
+          } else {
+            window._scMappings.push({ question_id: q.question_id, scores: { '0': 0, '1': 5, '2': 10 } });
+          }
+        }
+      }));
+    }
+  }
+  renderScFormSelector();
+  renderScMappings();
+}
+
+function renderScMappings() {
+  const container = document.getElementById('scMappingsContainer');
+
+  if (window._scFormIds.length === 0) {
+    container.innerHTML = '<p style="padding:24px;text-align:center;color:var(--text-dim);font-size:13px">Select forms above to configure score mappings</p>';
+    return;
+  }
+
+  // Build question lookup from selected forms
+  let rows = [];
+  window._scFormIds.forEach(fid => {
+    const form = forms.find(f => f.form_id === fid);
+    if (!form) return;
+    form.sections.forEach(sec => {
+      sec.questions.forEach(q => {
+        const mapping = window._scMappings.find(m => m.question_id === q.question_id);
+        rows.push({ form: form.name, section: sec.name, question: q, mapping });
+      });
+    });
+  });
+
+  let html = `<table class="mapping-table"><thead><tr>
+    <th>Question</th><th>Type</th>`;
+
+  // Check if we have binary and/or likert
+  const hasBinary = rows.some(r => r.question.answer_type === 'binary');
+  const hasLikert = rows.some(r => r.question.answer_type === 'likert_0_2');
+
+  html += `<th>Score Values</th></tr></thead><tbody>`;
+
+  rows.forEach((row, ri) => {
+    const q = row.question;
+    const m = row.mapping;
+    const typeLabel = q.answer_type === 'binary' ? 'Binary' : 'Likert';
+
+    html += `<tr>
+      <td>
+        <div style="font-size:13px">${escapeHtml(q.question_text)}</div>
+        <div style="font-size:11px;color:var(--text-dim)">${escapeHtml(row.section)} &middot; ${escapeHtml(row.form)}</div>
+      </td>
+      <td><span class="badge ${q.answer_type === 'binary' ? 'badge-binary' : 'badge-likert'}">${typeLabel}</span></td>
+      <td>
+    `;
+
+    if (q.answer_type === 'binary') {
+      html += `
+        <span style="font-size:12px;color:var(--text-muted);margin-right:4px">Yes:</span>
+        <input value="${m?.scores?.Yes ?? 5}" onchange="updateMapping('${q.question_id}','Yes',this.value)">
+        <span style="font-size:12px;color:var(--text-muted);margin:0 4px 0 12px">No:</span>
+        <input value="${m?.scores?.No ?? 0}" onchange="updateMapping('${q.question_id}','No',this.value)">
+      `;
+    } else {
+      html += `
+        <span style="font-size:12px;color:var(--text-muted);margin-right:4px">0:</span>
+        <input value="${m?.scores?.['0'] ?? 0}" onchange="updateMapping('${q.question_id}','0',this.value)">
+        <span style="font-size:12px;color:var(--text-muted);margin:0 4px 0 8px">1:</span>
+        <input value="${m?.scores?.['1'] ?? 5}" onchange="updateMapping('${q.question_id}','1',this.value)">
+        <span style="font-size:12px;color:var(--text-muted);margin:0 4px 0 8px">2:</span>
+        <input value="${m?.scores?.['2'] ?? 10}" onchange="updateMapping('${q.question_id}','2',this.value)">
+      `;
+    }
+
+    html += `</td></tr>`;
+  });
+
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+}
+
+function updateMapping(qId, key, value) {
+  let mapping = window._scMappings.find(m => m.question_id === qId);
+  if (!mapping) {
+    mapping = { question_id: qId, scores: {} };
+    window._scMappings.push(mapping);
+  }
+  mapping.scores[key] = parseInt(value) || 0;
+}
+
+async function saveCurrentScorecard() {
+  const name = document.getElementById('scName').value.trim();
+  if (!name) { showToast('Scorecard name is required', 'error'); return; }
+  if (window._scFormIds.length === 0) { showToast('Select at least one form', 'error'); return; }
+
+  const scData = {
+    scorecard_id: document.getElementById('scId').value.trim(),
+    name: name,
+    form_ids: window._scFormIds,
+    score_mappings: window._scMappings,
+    critical_fail_behavior: document.getElementById('scCritBehavior').value,
+    min_duration_seconds: parseInt(document.getElementById('scMinDuration').value) || 30
+  };
+
+  try {
+    const res = await fetch(`${API}/api/scorecards`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(scData)
+    });
+    if (!res.ok) throw new Error('Failed to save');
+    await loadScorecards();
+    showToast('Scorecard saved');
+    navigate('scorecards');
+  } catch(e) {
+    showToast('Error saving scorecard: ' + e.message, 'error');
+  }
+}
+
+// ============================================================
+//  GRADE TRANSCRIPT VIEW
+// ============================================================
+function renderGradeView(el) {
+  let html = `
+    <div class="page-header">
+      <h1>Grade Transcript</h1>
+      <p>Submit a call transcript and run a scorecard against it</p>
+    </div>
+  `;
+
+  if (scorecards.length === 0) {
+    html += `
+      <div class="empty-state">
+        <div class="empty-state-icon">&#9654;</div>
+        <h2>No scorecards configured</h2>
+        <p>Create a scorecard first (which requires at least one evaluation form).</p>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="navigate('forms')">Create Form</button>
+          <button class="btn btn-secondary" onclick="navigate('scorecards')">Create Scorecard</button>
+        </div>
+      </div>
+    `;
+    el.innerHTML = html;
+    return;
+  }
+
+  html += `
+    <div class="card">
+      <div class="form-group">
+        <label>Select Scorecard</label>
+        <select class="form-select" id="gradeScorecard">
+          ${scorecards.map(sc => `<option value="${sc.scorecard_id}">${escapeHtml(sc.name)}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>Transcript</h3>
+        <div class="btn-group">
+          <select class="form-select" id="sampleTranscriptSelect" style="width:auto;min-width:180px;padding:6px 32px 6px 12px;font-size:12px">
+            <option value="">Load sample transcript...</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Paste transcript JSON or select a sample above</label>
+        <textarea class="form-textarea" id="gradeTranscript" style="min-height:300px;font-family:var(--font-mono);font-size:12px" placeholder='{"call_metadata": {...}, "transcript": [...]}'></textarea>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="btnRunGrade" style="width:100%;padding:14px;font-size:15px">Run Grading</button>
+  `;
+
+  el.innerHTML = html;
+
+  // Load sample transcripts dropdown
+  (async () => {
+    try {
+      const res = await fetch(`${API}/api/sample-transcripts`);
+      const samples = await res.json();
+      const select = document.getElementById('sampleTranscriptSelect');
+      samples.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = JSON.stringify(s.data);
+        opt.textContent = `${s.label} (${s.data.call_metadata.agent_name})`;
+        select.appendChild(opt);
+      });
+      select.onchange = function() {
+        if (this.value) {
+          document.getElementById('gradeTranscript').value = JSON.stringify(JSON.parse(this.value), null, 2);
+          showToast('Transcript loaded');
+        }
+      };
+    } catch(e) {}
+  })();
+
+  document.getElementById('btnRunGrade').onclick = runGrading;
+}
+
+async function runGrading() {
+  const scorecardId = document.getElementById('gradeScorecard').value;
+  const transcriptText = document.getElementById('gradeTranscript').value.trim();
+
+  if (!transcriptText) { showToast('Paste a transcript first', 'error'); return; }
+
+  let transcript;
+  try {
+    transcript = JSON.parse(transcriptText);
+  } catch(e) {
+    showToast('Invalid JSON in transcript', 'error');
+    return;
+  }
+
+  // Show overlay
+  const overlay = document.getElementById('gradingOverlay');
+  overlay.classList.add('active');
+  animateSteps();
+
+  const btn = document.getElementById('btnRunGrade');
+  btn.disabled = true;
+  btn.textContent = 'Grading...';
+
+  try {
+    const res = await fetch(`${API}/api/grade-with-scorecard`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transcript, scorecard_id: scorecardId })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Grading failed');
+    }
+
+    const result = await res.json();
+    overlay.classList.remove('active');
+    resetSteps();
+
+    await loadResults();
+    showToast('Grading complete!');
+    navigate('result-detail', result);
+  } catch(e) {
+    overlay.classList.remove('active');
+    resetSteps();
+    showToast('Error: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Run Grading';
+  }
+}
+
+function animateSteps() {
+  const steps = ['step-keyword', 'step-haiku', 'step-sonnet', 'step-scoring'];
+  steps.forEach((id, i) => {
+    setTimeout(() => {
+      document.getElementById(id).classList.add('active');
+      if (i > 0) {
+        document.getElementById(steps[i-1]).classList.remove('active');
+        document.getElementById(steps[i-1]).classList.add('done');
+      }
+    }, i * 2500);
+  });
+}
+
+function resetSteps() {
+  ['step-keyword', 'step-haiku', 'step-sonnet', 'step-scoring'].forEach(id => {
+    document.getElementById(id).classList.remove('active', 'done');
+  });
+}
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function getAnswerBadge(qr) {
+  if (qr.answer === 'N/A') return '<span class="badge badge-na">N/A</span>';
+  if (qr.answer === 'Yes') return '<span class="badge badge-yes">YES</span>';
+  if (qr.answer === 'No') return '<span class="badge badge-no">NO</span>';
+  if (qr.answer === '2') return '<span class="badge badge-likert-2">2 / 2</span>';
+  if (qr.answer === '1') return '<span class="badge badge-likert-1">1 / 2</span>';
+  if (qr.answer === '0') return '<span class="badge badge-likert-0">0 / 2</span>';
+  return `<span class="badge badge-na">${qr.answer}</span>`;
+}
+
+function formatMethod(method) {
+  const map = { 'keyword_match': 'Keyword', 'llm_evaluation': 'LLM', 'hybrid_keyword': 'Hybrid (KW)', 'hybrid_llm': 'Hybrid (LLM)' };
+  return map[method] || method;
+}
+
+function stageLabel(stage) {
+  if (stage === 1) return 'Relevance (N/A)';
+  if (stage === 2) return 'Evidence Evaluation';
+  if (stage === 3) return 'Fallback';
+  return 'Unknown';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// --- Init ---
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "call_metadata": {
+    "call_id": "rec_2026040916083215",
+    "call_direction": "outbound",
+    "duration_seconds": 195,
+    "agent_name": "James Okoro"
+  },
+  "transcript": [
+    {"speaker": "agent", "timestamp": "0:00", "text": "Hi, this is James calling from Wati. Am I speaking with Deepak?"},
+    {"speaker": "customer", "timestamp": "0:05", "text": "Yes, this is Deepak."},
+    {"speaker": "agent", "timestamp": "0:07", "text": "Hi Deepak, I'm following up on the ticket you raised yesterday about your chatbot not responding to customer messages. Can you give me your account number so I can look into this?"},
+    {"speaker": "customer", "timestamp": "0:16", "text": "Sure, it's ACC-77421."},
+    {"speaker": "agent", "timestamp": "0:20", "text": "Thank you. Let me pull that up. So the chatbot isn't responding at all, or is it giving wrong responses?"},
+    {"speaker": "customer", "timestamp": "0:27", "text": "It's not responding at all. Customers send messages and the bot just doesn't reply. We've been handling everything manually since yesterday which is killing our team."},
+    {"speaker": "agent", "timestamp": "0:36", "text": "I understand. Let me check your chatbot configuration. Okay, I can see your chatbot flow here. It looks like the trigger keyword was changed — it was set to 'hi' and 'hello' before, but now it's set to 'start'. So the bot only activates when someone types 'start'."},
+    {"speaker": "customer", "timestamp": "0:54", "text": "Oh. That might have been one of our new team members. They were editing the flow yesterday."},
+    {"speaker": "agent", "timestamp": "0:59", "text": "That would explain it. I'd recommend reverting the trigger keywords back to your original set. Would you like me to walk you through that?"},
+    {"speaker": "customer", "timestamp": "1:06", "text": "Actually, can you just fix it on your end? I'm not near a computer right now."},
+    {"speaker": "agent", "timestamp": "1:11", "text": "I can update the trigger keywords for you. I'll set them back to 'hi', 'hello', 'hey', and 'start' so it covers all the common greetings. Does that work?"},
+    {"speaker": "customer", "timestamp": "1:20", "text": "Yes, that sounds perfect."},
+    {"speaker": "agent", "timestamp": "1:23", "text": "Done. I've updated the keywords. The chatbot should start responding again within a couple of minutes as the changes propagate. Can you have someone on your team test it in about five minutes?"},
+    {"speaker": "customer", "timestamp": "1:34", "text": "Sure, I'll ask my colleague to test it. Is there a way to prevent this from happening again? Like restricting who can edit the chatbot?"},
+    {"speaker": "agent", "timestamp": "1:42", "text": "Yes, you can set role-based permissions in your team settings. You can restrict chatbot editing to admin users only. I'd recommend doing that if you have newer team members who might accidentally change things."},
+    {"speaker": "customer", "timestamp": "1:54", "text": "Good to know. I'll set that up."},
+    {"speaker": "agent", "timestamp": "1:57", "text": "Sounds good. Do you have any other questions?"},
+    {"speaker": "customer", "timestamp": "2:00", "text": "No, that's all. Thanks James."},
+    {"speaker": "agent", "timestamp": "2:03", "text": "You're welcome. Have a good day, Deepak."},
+    {"speaker": "customer", "timestamp": "2:06", "text": "You too, bye."},
+    {"speaker": "agent", "timestamp": "2:08", "text": "Bye!"}
+  ]
+}
