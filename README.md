@@ -38,10 +38,25 @@ AI-powered quality assurance grading for contact center call transcripts. Built 
 
 ### Prerequisites
 
-- Python 3.10+
 - An [Anthropic API key](https://console.anthropic.com/)
+- **Docker** (recommended) or Python 3.10+
 
-### Install & Run
+### Option 1: Docker (Recommended)
+
+```bash
+# Clone the repo
+git clone https://github.com/101WaysToBug/auto-qa-grader.git
+cd auto-qa-grader
+
+# Configure your API key
+cp .env.local.example .env.local
+# Edit .env.local and add your ANTHROPIC_API_KEY
+
+# Build and run
+docker compose up --build
+```
+
+### Option 2: Local Python
 
 ```bash
 # Clone the repo
@@ -76,6 +91,9 @@ Open [http://localhost:8000](http://localhost:8000) in your browser.
 ├── prompts.py          # System prompts for Claude (binary + Likert)
 ├── run.py              # CLI runner (alternative to server)
 ├── requirements.txt    # Python dependencies
+├── Dockerfile          # Container image definition
+├── docker-compose.yml  # One-command Docker setup
+├── .dockerignore       # Files excluded from Docker build
 ├── .env.local          # API key (not committed)
 ├── frontend/
 │   └── index.html      # Single-file SPA frontend
@@ -122,4 +140,5 @@ The repo includes 4 sample transcripts for testing:
 - **Backend**: Python, FastAPI, Uvicorn
 - **AI**: Anthropic Claude API (Haiku for binary, Sonnet for Likert)
 - **Frontend**: Vanilla HTML/CSS/JS (single-file SPA, no build step)
+- **Containerization**: Docker + Docker Compose
 - **Storage**: In-memory (prototype)
