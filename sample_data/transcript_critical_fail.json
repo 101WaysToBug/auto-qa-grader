@@ -1,0 +1,25 @@
+{
+  "call_metadata": {
+    "call_id": "rec_2026040916283471",
+    "call_direction": "inbound",
+    "duration_seconds": 118,
+    "agent_name": "Derek Powell"
+  },
+  "transcript": [
+    {"speaker": "agent", "timestamp": "0:00", "text": "Yeah, go ahead."},
+    {"speaker": "customer", "timestamp": "0:03", "text": "Hi, I'm having a serious issue. I was charged twice for my subscription this month — two charges of $49.99 both hit my credit card on the same day. I need this resolved immediately because—"},
+    {"speaker": "agent", "timestamp": "0:12", "text": "Okay yeah, I see that a lot. What's the email on your account?"},
+    {"speaker": "customer", "timestamp": "0:16", "text": "It's rachel.nguyen@gmail.com."},
+    {"speaker": "agent", "timestamp": "0:19", "text": "Alright, so I'm looking at your account and I only see one charge here. The system doesn't double-charge people, it's not possible with our billing platform. You probably just saw a pending authorization that'll drop off in a day or two."},
+    {"speaker": "customer", "timestamp": "0:30", "text": "No, these are both posted charges. They're not pending. I have my bank statement right here — two separate completed transactions on April 7th, both for $49.99."},
+    {"speaker": "agent", "timestamp": "0:40", "text": "Right, but like I said, our system literally cannot charge someone twice. It's a technical limitation. So it's probably something on your bank's end. You should call them and dispute one of the charges."},
+    {"speaker": "customer", "timestamp": "0:50", "text": "That doesn't make any sense. My bank doesn't just fabricate charges. Can you please escalate this to someone who can actually look into the billing system?"},
+    {"speaker": "agent", "timestamp": "0:57", "text": "There's nobody to escalate to for this. We don't have a billing department that takes calls. And I'm telling you, the charge isn't on our end. Our refund policy also requires a 30-day waiting period before we can process anything, so even if it was us, we couldn't do anything right now."},
+    {"speaker": "customer", "timestamp": "1:10", "text": "A 30-day waiting period? That can't be right. I've gotten same-day refunds from you before. And I need this money back — it's almost a hundred dollars extra that I shouldn't have been charged."},
+    {"speaker": "agent", "timestamp": "1:19", "text": "Well the policy changed. Look, I've told you what I can see on my end. There's one charge showing. Call your bank, they'll sort it out."},
+    {"speaker": "customer", "timestamp": "1:27", "text": "This is unacceptable. Can I at least get a case number or something so I have a record of this call?"},
+    {"speaker": "agent", "timestamp": "1:32", "text": "We don't generate case numbers for billing inquiries. You're welcome to call back if the charge doesn't drop off."},
+    {"speaker": "customer", "timestamp": "1:38", "text": "This is the worst support experience I've ever had."},
+    {"speaker": "agent", "timestamp": "1:41", "text": "Sorry you feel that way. Bye."}
+  ]
+}

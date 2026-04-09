@@ -1,0 +1,34 @@
+{
+  "call_metadata": {
+    "call_id": "rec_2026040710441592",
+    "call_direction": "outbound",
+    "duration_seconds": 278,
+    "agent_name": "Tom Bradley"
+  },
+  "transcript": [
+    {"speaker": "agent", "timestamp": "0:00", "text": "Hi, this is Tom from Wati. Am I speaking with Natasha?"},
+    {"speaker": "customer", "timestamp": "0:04", "text": "Yes, hi Tom."},
+    {"speaker": "agent", "timestamp": "0:06", "text": "Great, thanks for taking my call. I saw that you signed up for a trial on our website last week but haven't logged in yet. I wanted to check in and see if I could help you get started."},
+    {"speaker": "customer", "timestamp": "0:15", "text": "Oh right, yeah. We've been busy. We run an online furniture store and we were looking at WhatsApp tools for customer service."},
+    {"speaker": "agent", "timestamp": "0:23", "text": "Perfect, Wati is great for customer service. So what kind of issues are your customers reaching out about?"},
+    {"speaker": "customer", "timestamp": "0:29", "text": "Mostly delivery tracking, returns, and product questions. We get about 200 messages a day on WhatsApp and it's just me and one other person handling everything."},
+    {"speaker": "agent", "timestamp": "0:39", "text": "200 a day with two people — that's a lot. So Wati would really help with that. We have a shared team inbox where both of you can see and reply to conversations without stepping on each other's toes. And we have chatbots that can handle repetitive stuff like delivery tracking automatically."},
+    {"speaker": "customer", "timestamp": "0:53", "text": "The chatbot part sounds interesting. How does that work exactly?"},
+    {"speaker": "agent", "timestamp": "0:57", "text": "It's a no-code builder, you basically drag and drop to create conversation flows. So when someone asks about their order status, the bot can ask for the order number, look it up, and give them an update without a human touching it. It's pretty straightforward."},
+    {"speaker": "customer", "timestamp": "1:10", "text": "Does it integrate with Shopify? That's what we use for our store."},
+    {"speaker": "agent", "timestamp": "1:14", "text": "Yeah, we have a Shopify integration. It pulls in order data so the chatbot can look up orders automatically. A lot of our e-commerce customers use it."},
+    {"speaker": "customer", "timestamp": "1:23", "text": "Okay, that's good. What about pricing? We're a small business, so budget is tight."},
+    {"speaker": "agent", "timestamp": "1:28", "text": "Sure, so our plans start at $49 a month for up to 5 users. That includes the inbox, chatbots, and broadcasts. There are also Meta conversation charges on top, but those depend on your volume."},
+    {"speaker": "customer", "timestamp": "1:40", "text": "Hmm, $49 plus variable costs. That adds up. We were also looking at a couple of other tools — Respond.io and Trengo. What makes Wati different?"},
+    {"speaker": "agent", "timestamp": "1:50", "text": "Well, Wati is purpose-built for WhatsApp, so we tend to go deeper on WhatsApp-specific features than platforms that try to do everything. And our pricing is generally more competitive for small teams. But I think the best way to see the difference is to actually try it."},
+    {"speaker": "customer", "timestamp": "2:04", "text": "Fair enough. I am a bit worried about setup time though. We don't have a developer on the team. Is it hard to get everything connected?"},
+    {"speaker": "agent", "timestamp": "2:12", "text": "No, it's designed for non-technical users. Most people get their WhatsApp number connected and basic flows running in a day or two. And we have support if you get stuck."},
+    {"speaker": "customer", "timestamp": "2:22", "text": "Okay. Let me talk to my business partner about it and we'll probably give the trial another shot."},
+    {"speaker": "agent", "timestamp": "2:28", "text": "Sounds good. I can also set up a quick demo call if that would help you and your partner see it in action?"},
+    {"speaker": "customer", "timestamp": "2:34", "text": "Maybe. Let me check with her first and I'll let you know."},
+    {"speaker": "agent", "timestamp": "2:38", "text": "Sure thing. I'll send you a follow-up email with some resources about the Shopify integration since that seemed important to you. What's the best email?"},
+    {"speaker": "customer", "timestamp": "2:45", "text": "natasha@oakhome.co."},
+    {"speaker": "agent", "timestamp": "2:48", "text": "Got it. I'll send that over today. Feel free to reach out if you have any questions. Thanks Natasha!"},
+    {"speaker": "customer", "timestamp": "2:54", "text": "Thanks Tom, bye."}
+  ]
+}

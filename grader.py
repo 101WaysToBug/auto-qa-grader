@@ -81,7 +81,7 @@ class LLMGrader:
         model = (
             "claude-haiku-4-5-20251001"
             if question_type == AnswerType.BINARY
-            else "claude-sonnet-4-6-20250514"
+            else "claude-sonnet-4-20250514"
         )
 
         # Build the input payload per spec
@@ -128,6 +128,7 @@ class LLMGrader:
         )
 
         # Call the API
+        print(f"  [>] Calling model={model} for {question_type.value} questions")
         try:
             response = self.client.messages.create(
                 model=model,
@@ -137,7 +138,7 @@ class LLMGrader:
             )
             return self._parse_response(response, questions)
         except Exception as e:
-            print(f"  [!] LLM call failed: {e}")
+            print(f"  [!] LLM call failed (model={model}): {e}")
             # Retry once
             try:
                 print("  [!] Retrying...")

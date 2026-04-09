@@ -1,0 +1,19 @@
+{
+  "scorecard_id": "sc_sales_q2_2026",
+  "name": "Sales Team — Q2 2026",
+  "critical_fail_behavior": "zero",
+  "min_duration_seconds": 30,
+  "score_mappings": [
+    {"question_id": "sq_001", "scores": {"Yes": 5, "No": 0}},
+    {"question_id": "sq_002", "scores": {"0": 0, "1": 5, "2": 10}},
+    {"question_id": "sq_003", "scores": {"Yes": 15, "No": 0}},
+    {"question_id": "sq_004", "scores": {"0": 0, "1": 5, "2": 15}},
+    {"question_id": "sq_005", "scores": {"Yes": 10, "No": 0}},
+    {"question_id": "sq_006", "scores": {"0": 0, "1": 5, "2": 15}},
+    {"question_id": "sq_007", "scores": {"Yes": 5, "No": 0}},
+    {"question_id": "sq_008", "scores": {"0": 0, "1": 5, "2": 10}},
+    {"question_id": "sq_009", "scores": {"Yes": 10, "No": 0}},
+    {"question_id": "sq_010", "scores": {"Yes": 10, "No": 0}},
+    {"question_id": "sq_011", "scores": {"Yes": 5, "No": 0}}
+  ]
+}

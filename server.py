@@ -29,9 +29,10 @@ from models import (
     Utterance,
 )
 
-# Load env
+# Load env — resolve project root (works when run directly or imported from api/)
 script_dir = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(script_dir, ".env.local"))
+PROJECT_ROOT = os.environ.get("PROJECT_ROOT", script_dir)
+load_dotenv(os.path.join(PROJECT_ROOT, ".env.local"))
 
 app = FastAPI(title="Auto QA & Call Grading")
 app.add_middleware(
@@ -41,7 +42,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-SAMPLE_DIR = os.path.join(script_dir, "sample_data")
+SAMPLE_DIR = os.path.join(PROJECT_ROOT, "sample_data")
 
 # --- In-memory storage for prototype ---
 stored_forms: dict[str, dict] = {}
@@ -187,7 +188,7 @@ def result_to_dict(result, scorecard) -> dict:
 
 @app.get("/")
 async def serve_frontend():
-    html_path = os.path.join(script_dir, "frontend", "index.html")
+    html_path = os.path.join(PROJECT_ROOT, "frontend", "index.html")
     return FileResponse(html_path)
 
 
@@ -637,7 +638,7 @@ async def get_result(result_id: str):
 
 @app.on_event("startup")
 async def seed_sample_data():
-    """Load sample evaluation form and scorecard into storage on startup."""
+    """Load sample evaluation forms and scorecards into storage on startup."""
     try:
         with open(os.path.join(SAMPLE_DIR, "evaluation_form.json")) as f:
             sample_form = json.load(f)
@@ -645,11 +646,22 @@ async def seed_sample_data():
 
         with open(os.path.join(SAMPLE_DIR, "scorecard.json")) as f:
             sample_sc = json.load(f)
-        # Add form_ids reference to the scorecard
         sample_sc["form_ids"] = [sample_form["form_id"]]
         stored_scorecards[sample_sc["scorecard_id"]] = sample_sc
     except Exception as e:
-        print(f"Warning: could not seed sample data: {e}")
+        print(f"Warning: could not seed support sample data: {e}")
+
+    try:
+        with open(os.path.join(SAMPLE_DIR, "evaluation_form_sales.json")) as f:
+            sales_form = json.load(f)
+        stored_forms[sales_form["form_id"]] = sales_form
+
+        with open(os.path.join(SAMPLE_DIR, "scorecard_sales.json")) as f:
+            sales_sc = json.load(f)
+        sales_sc["form_ids"] = [sales_form["form_id"]]
+        stored_scorecards[sales_sc["scorecard_id"]] = sales_sc
+    except Exception as e:
+        print(f"Warning: could not seed sales sample data: {e}")
 
 
 if __name__ == "__main__":
