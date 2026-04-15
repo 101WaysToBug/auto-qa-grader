@@ -1,18 +1,28 @@
 # Auto QA & Call Grading
 
-AI-powered quality assurance grading for contact center call transcripts. Built with FastAPI + Claude API, this tool evaluates agent performance against configurable evaluation forms and scorecards.
+AI-powered quality assurance grading for contact center call transcripts. Built with FastAPI + Claude API, this tool evaluates agent performance against configurable scorecards with sections, questions, and scoring — all in one unified builder.
 
 **Live Demo**: [https://autoqagrader.vercel.app](https://autoqagrader.vercel.app)
 
 ## How It Works
 
-1. **Create Evaluation Forms** — Define questions to grade agents on (binary Yes/No or Likert 0-2 scale). Pull from a built-in template library or write custom questions.
-2. **Build Scorecards** — Select forms, assign point values to each question, and configure critical fail behavior.
+1. **Build Scorecards** — Create scorecards with sections and questions directly. Pull from a template library, import from CSV (AI-powered), or write custom questions. Assign point values inline, configure critical fail behavior, and set matching methods per question.
+2. **Refine with AI** — Use the "AI Refine" button on any question to auto-generate precise answer definitions and few-shot examples using Claude Sonnet.
 3. **Grade Transcripts** — Submit a call transcript and the system automatically grades it using a multi-stage pipeline:
-   - **Keyword matching** for fast, deterministic checks
+   - **Keyword matching** for fast, deterministic compliance checks
    - **Claude Haiku** for binary (Yes/No) questions
-   - **Claude Sonnet** for nuanced Likert-scale questions
-4. **Review Results** — Dashboard shows all graded calls with scores, critical fails, and per-question AI reasoning with transcript evidence.
+   - **Claude Sonnet** for nuanced Likert-scale (0-2) questions
+4. **Review Results** — Dashboard shows all graded calls with scores, section breakdowns, critical fails, and per-question AI reasoning with transcript evidence.
+
+## Key Features
+
+- **Unified Scorecard Builder** — Sections, questions, answer definitions, scoring, and critical fail config in one place. No separate forms to manage.
+- **AI-Powered CSV Import** — Upload a spreadsheet-based QA rubric and AI extracts questions, detects answer types (Binary/Likert), and assigns section categories automatically.
+- **Auto-Suggest (Refine with AI)** — Per-question AI refinement generates precise answer definitions and two-shot examples optimized for consistent automated grading.
+- **Three Matching Methods** — Keyword (deterministic), LLM (contextual), or Hybrid (keyword first, LLM fallback) per question.
+- **Critical Fail Behavior** — Per-question granularity: zero the entire scorecard or zero just the section.
+- **Template Library** — Pre-built questions across 6 categories (Opening, Discovery, Empathy, Troubleshooting, Compliance, Closing).
+- **Duplicate Scorecards** — One-click duplication for iterating on scorecard variants.
 
 ## Architecture
 
@@ -34,7 +44,17 @@ AI-powered quality assurance grading for contact center call transcripts. Built 
 
 1. **Relevance Check** — Is this question applicable to the call? If not, mark N/A.
 2. **Evidence Evaluation** — Find transcript evidence and grade against answer definitions.
-3. **Insufficient Evidence Fallback** — Use default answer or mark N/A if evidence is lacking.
+3. **Insufficient Evidence Fallback** — Mark N/A if na_eligible, otherwise provide low-confidence answer.
+
+### LLM Prompt Architecture
+
+Three distinct LLM use cases, each with dedicated prompts:
+
+| Use Case | Model | Purpose |
+|---|---|---|
+| **Call Grading** | Haiku (Binary) / Sonnet (Likert) | Evaluate transcript against scorecard questions |
+| **CSV Import** | Sonnet | Parse spreadsheet, extract questions, categorize |
+| **Auto-Suggest** | Sonnet | Generate answer definitions and few-shot examples |
 
 ## Deploy Locally
 
@@ -104,8 +124,6 @@ cd auto-qa-grader
 vercel link
 
 # 3. Add your Anthropic API key as a secure environment variable
-#    This will prompt you for the value — it's encrypted at rest and
-#    never exposed in logs, source code, or build output.
 echo "YOUR_API_KEY" | vercel env add ANTHROPIC_API_KEY production --sensitive
 
 # 4. Deploy to production
@@ -143,8 +161,8 @@ vercel --prod
 ```
 ├── server.py                   # FastAPI server with all API endpoints
 ├── grader.py                   # Core grading engine (keyword + LLM pipeline)
-├── models.py                   # Data models (forms, scorecards, transcripts, results)
-├── prompts.py                  # System prompts for Claude (binary + Likert)
+├── models.py                   # Data models (scorecards, sections, questions, results)
+├── prompts.py                  # System prompts (grading, import, auto-suggest)
 ├── run.py                      # CLI runner (alternative to server)
 ├── requirements.txt            # Python dependencies
 ├── Dockerfile                  # Container image definition
@@ -155,9 +173,7 @@ vercel --prod
 ├── frontend/
 │   └── index.html              # Single-file SPA frontend
 └── sample_data/
-    ├── evaluation_form.json          # Support evaluation form
-    ├── evaluation_form_sales.json    # Sales evaluation form
-    ├── scorecard.json                # Support scorecard
+    ├── scorecard.json                # Support scorecard (sections + questions + scores)
     ├── scorecard_sales.json          # Sales scorecard
     ├── transcript.json               # Support — good call
     ├── transcript_excellent.json     # Support — high-scoring
@@ -171,7 +187,7 @@ vercel --prod
 
 ## Sample Data
 
-The repo ships with two evaluation templates and sample transcripts for each.
+The repo ships with two scorecard templates and sample transcripts for each.
 
 ### Support Scorecard
 
@@ -197,22 +213,21 @@ The repo ships with two evaluation templates and sample transcripts for each.
 |---|---|---|
 | `GET` | `/api/health` | Health check + API key status |
 | `GET` | `/api/templates` | Template question library |
-| `GET` | `/api/forms` | List saved evaluation forms |
-| `POST` | `/api/forms` | Create/update a form |
-| `DELETE` | `/api/forms/{id}` | Delete a form |
 | `GET` | `/api/scorecards` | List saved scorecards |
 | `POST` | `/api/scorecards` | Create/update a scorecard |
 | `DELETE` | `/api/scorecards/{id}` | Delete a scorecard |
-| `POST` | `/api/grade` | Grade with inline form + scorecard |
+| `POST` | `/api/grade` | Grade with inline scorecard |
 | `POST` | `/api/grade-with-scorecard` | Grade using a stored scorecard |
 | `GET` | `/api/results` | Dashboard summary of all results |
 | `GET` | `/api/results/{id}` | Full grading detail |
 | `GET` | `/api/sample-transcripts` | All sample transcripts |
+| `POST` | `/api/import-questions` | AI-powered question extraction from CSV content |
+| `POST` | `/api/auto-suggest` | AI-powered question refinement + answer definition generation |
 
 ## Tech Stack
 
 - **Backend**: Python, FastAPI, Uvicorn
-- **AI**: Anthropic Claude API (Haiku for binary, Sonnet for Likert)
+- **AI**: Anthropic Claude API (Haiku for binary grading, Sonnet for Likert grading + import + auto-suggest)
 - **Frontend**: Vanilla HTML/CSS/JS (single-file SPA, no build step)
 - **Deployment**: Vercel (serverless Python + static CDN)
 - **Containerization**: Docker + Docker Compose

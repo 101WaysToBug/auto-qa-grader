@@ -3,31 +3,32 @@
 
 import json
 import os
-import sys
+import re
 import uuid
 from datetime import datetime
 
+from typing import Optional
+
+import anthropic
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from grader import GradingEngine
 from models import (
     AnswerType,
     CallMetadata,
-    EvaluationForm,
     Example,
     MatchingMethod,
     Question,
-    ScoreMapping,
     ScorecardConfig,
     Section,
     Transcript,
     Utterance,
 )
+from prompts import IMPORT_SYSTEM_PROMPT, AUTO_SUGGEST_SYSTEM_PROMPT
 
 # Load env — resolve project root (works when run directly or imported from api/)
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -45,7 +46,6 @@ app.add_middleware(
 SAMPLE_DIR = os.path.join(PROJECT_ROOT, "sample_data")
 
 # --- In-memory storage for prototype ---
-stored_forms: dict[str, dict] = {}
 stored_scorecards: dict[str, dict] = {}
 stored_results: list[dict] = []
 
@@ -54,13 +54,25 @@ stored_results: list[dict] = []
 
 class GradeRequest(BaseModel):
     transcript: dict
-    evaluation_form: dict
     scorecard: dict
 
 
 class GradeWithScorecardRequest(BaseModel):
     transcript: dict
     scorecard_id: str
+
+
+class AutoSuggestRequest(BaseModel):
+    question_text: str
+    answer_type: str
+    section_category: str
+    existing_answer_text: Optional[dict] = None
+
+
+class ImportQuestionsRequest(BaseModel):
+    file_content: list[list]
+    file_name: str = ""
+    sheet_name: str = "Sheet1"
 
 
 # --- Helpers to convert JSON dicts to internal models ---
@@ -81,11 +93,11 @@ def parse_transcript(data: dict) -> Transcript:
     )
 
 
-def parse_form(data: dict) -> EvaluationForm:
+def parse_scorecard(data: dict) -> ScorecardConfig:
     sections = []
-    for s in data["sections"]:
+    for s in data.get("sections", []):
         questions = []
-        for q in s["questions"]:
+        for q in s.get("questions", []):
             examples = [
                 Example(
                     transcript_excerpt=ex["transcript_excerpt"],
@@ -100,48 +112,45 @@ def parse_form(data: dict) -> EvaluationForm:
                     question_text=q["question_text"],
                     answer_type=AnswerType(q["answer_type"]),
                     answer_definitions=q["answer_definitions"],
-                    matching_method=MatchingMethod(q["matching_method"]),
+                    scores=q.get("scores", {}),
+                    matching_method=MatchingMethod(q.get("matching_method", "llm")),
                     keywords=q.get("keywords", []),
-                    default_answer=q.get("default_answer"),
                     na_eligible=q.get("na_eligible", True),
                     critical_fail=q.get("critical_fail", False),
+                    critical_fail_level=q.get("critical_fail_level"),
                     examples=examples,
                 )
             )
         sections.append(
-            Section(name=s["name"], questions=questions, description=s.get("description", ""))
+            Section(
+                name=s["name"],
+                questions=questions,
+                description=s.get("description", ""),
+                category=s.get("category", ""),
+            )
         )
-    return EvaluationForm(form_id=data["form_id"], name=data["name"], sections=sections)
-
-
-def parse_scorecard(data: dict, forms: list[EvaluationForm]) -> ScorecardConfig:
     return ScorecardConfig(
         scorecard_id=data["scorecard_id"],
         name=data["name"],
-        forms=forms,
-        score_mappings=[
-            ScoreMapping(question_id=sm["question_id"], scores=sm["scores"])
-            for sm in data["score_mappings"]
-        ],
-        critical_fail_behavior=data.get("critical_fail_behavior", "flag"),
+        sections=sections,
         min_duration_seconds=data.get("min_duration_seconds", 30),
     )
 
 
 def result_to_dict(result, scorecard) -> dict:
     """Serialize GradingResult to JSON-friendly dict."""
-    # Build question metadata lookup from scorecard forms
+    # Build question metadata lookup from scorecard sections
     q_meta = {}
-    for form in scorecard.forms:
-        for section in form.sections:
-            for q in section.questions:
-                q_meta[q.question_id] = {
-                    "question_text": q.question_text,
-                    "answer_type": q.answer_type.value,
-                    "critical_fail": q.critical_fail,
-                    "section": section.name,
-                    "form_name": form.name,
-                }
+    for section in scorecard.sections:
+        for q in section.questions:
+            q_meta[q.question_id] = {
+                "question_text": q.question_text,
+                "answer_type": q.answer_type.value,
+                "critical_fail": q.critical_fail,
+                "critical_fail_level": q.critical_fail_level,
+                "section": section.name,
+                "section_category": section.category,
+            }
 
     return {
         "call_id": result.call_id,
@@ -150,17 +159,17 @@ def result_to_dict(result, scorecard) -> dict:
         "cumulative_score": result.cumulative_score,
         "final_score": result.final_score,
         "critical_fail_triggered": result.critical_fail_triggered,
-        "critical_fail_behavior": scorecard.critical_fail_behavior,
         "critical_fail_questions": result.critical_fail_questions,
-        "form_scores": [
+        "critical_fail_levels": result.critical_fail_levels,
+        "section_scores": [
             {
-                "form_id": fs.form_id,
-                "form_name": fs.form_name,
-                "points_earned": fs.points_earned,
-                "points_possible": fs.points_possible,
-                "percentage": fs.percentage,
+                "section_name": ss.section_name,
+                "points_earned": ss.points_earned,
+                "points_possible": ss.points_possible,
+                "percentage": ss.percentage,
+                "critical_fail_triggered": ss.critical_fail_triggered,
             }
-            for fs in result.form_scores
+            for ss in result.section_scores
         ],
         "question_results": [
             {
@@ -168,8 +177,9 @@ def result_to_dict(result, scorecard) -> dict:
                 "question_text": q_meta.get(qr.question_id, {}).get("question_text", ""),
                 "answer_type": q_meta.get(qr.question_id, {}).get("answer_type", ""),
                 "section": q_meta.get(qr.question_id, {}).get("section", ""),
-                "form_name": q_meta.get(qr.question_id, {}).get("form_name", ""),
+                "section_category": q_meta.get(qr.question_id, {}).get("section_category", ""),
                 "critical_fail_flag": q_meta.get(qr.question_id, {}).get("critical_fail", False),
+                "critical_fail_level": q_meta.get(qr.question_id, {}).get("critical_fail_level"),
                 "decision_stage": qr.decision_stage,
                 "answer": qr.answer,
                 "confidence": qr.confidence,
@@ -194,14 +204,12 @@ async def serve_frontend():
 
 @app.get("/api/sample-data")
 async def get_sample_data():
-    """Return sample transcript, form, and scorecard for the frontend to pre-fill."""
+    """Return sample transcript and scorecard for the frontend to pre-fill."""
     with open(os.path.join(SAMPLE_DIR, "transcript.json")) as f:
         transcript = json.load(f)
-    with open(os.path.join(SAMPLE_DIR, "evaluation_form.json")) as f:
-        form = json.load(f)
     with open(os.path.join(SAMPLE_DIR, "scorecard.json")) as f:
         scorecard = json.load(f)
-    return {"transcript": transcript, "evaluation_form": form, "scorecard": scorecard}
+    return {"transcript": transcript, "scorecard": scorecard}
 
 
 @app.get("/api/sample-transcripts")
@@ -228,15 +236,14 @@ async def health():
 
 @app.post("/api/grade")
 async def grade_call(request: GradeRequest):
-    """Run the grading engine on the provided transcript + form + scorecard."""
+    """Run the grading engine on the provided transcript + scorecard."""
     api_key = os.environ.get("ANTHROPIC_API_KEY", "")
     if not api_key or api_key == "your-api-key-here":
         raise HTTPException(status_code=400, detail="ANTHROPIC_API_KEY not configured in .env.local")
 
     try:
         transcript = parse_transcript(request.transcript)
-        form = parse_form(request.evaluation_form)
-        scorecard = parse_scorecard(request.scorecard, [form])
+        scorecard = parse_scorecard(request.scorecard)
 
         engine = GradingEngine(api_key)
         result = engine.grade_call(scorecard, transcript)
@@ -250,20 +257,19 @@ async def grade_call(request: GradeRequest):
 
 TEMPLATE_QUESTIONS = [
     {
-        "category": "Opening & Verification",
+        "category": "Opening & Greeting",
+        "section_category": "opening_greeting",
         "questions": [
             {
                 "question_text": "Did the agent greet the customer and introduce themselves by name?",
                 "answer_type": "binary",
                 "matching_method": "llm",
                 "keywords": [],
-                "answer_definitions": {
-                    "Yes": "Agent stated their name during the greeting within the first 15 seconds of the call.",
-                    "No": "Agent did not state their name, or greeted without a personal introduction."
-                },
-                "default_answer": None,
+                "answer_definitions": {"Yes": "Agent stated their name during the greeting within the first 15 seconds of the call."},
+                "scores": {"Yes": 5, "No": 0},
                 "na_eligible": True,
                 "critical_fail": False,
+                "critical_fail_level": None,
                 "examples": []
             },
             {
@@ -271,32 +277,29 @@ TEMPLATE_QUESTIONS = [
                 "answer_type": "binary",
                 "matching_method": "hybrid",
                 "keywords": ["registered email", "registered phone", "account number", "can you give me your"],
-                "answer_definitions": {
-                    "Yes": "Agent asked for and received at least one identity verification element before accessing account-specific information.",
-                    "No": "Agent discussed account details without first verifying the customer's identity."
-                },
-                "default_answer": "No",
+                "answer_definitions": {"Yes": "Agent asked for and received at least one identity verification element before accessing account-specific information."},
+                "scores": {"Yes": 10, "No": 0},
                 "na_eligible": False,
                 "critical_fail": True,
+                "critical_fail_level": "zero_scorecard",
                 "examples": []
             },
         ]
     },
     {
-        "category": "Issue Understanding",
+        "category": "Discovery & Needs Assessment",
+        "section_category": "discovery_needs_assessment",
         "questions": [
             {
                 "question_text": "Did the agent let the customer fully describe their issue before responding?",
                 "answer_type": "binary",
                 "matching_method": "llm",
                 "keywords": [],
-                "answer_definitions": {
-                    "Yes": "Agent waited for the customer to finish describing their issue before jumping in with a response or solution.",
-                    "No": "Agent interrupted the customer while they were describing the issue."
-                },
-                "default_answer": None,
+                "answer_definitions": {"Yes": "Agent waited for the customer to finish describing their issue before jumping in with a response or solution."},
+                "scores": {"Yes": 5, "No": 0},
                 "na_eligible": True,
                 "critical_fail": False,
+                "critical_fail_level": None,
                 "examples": []
             },
             {
@@ -304,15 +307,19 @@ TEMPLATE_QUESTIONS = [
                 "answer_type": "binary",
                 "matching_method": "llm",
                 "keywords": [],
-                "answer_definitions": {
-                    "Yes": "Agent explicitly restated, paraphrased, or summarized the customer's issue back to them.",
-                    "No": "Agent moved directly to troubleshooting without confirming their understanding."
-                },
-                "default_answer": None,
+                "answer_definitions": {"Yes": "Agent explicitly restated, paraphrased, or summarized the customer's issue back to them."},
+                "scores": {"Yes": 5, "No": 0},
                 "na_eligible": True,
                 "critical_fail": False,
+                "critical_fail_level": None,
                 "examples": []
             },
+        ]
+    },
+    {
+        "category": "Empathy & Soft Skills",
+        "section_category": "empathy_soft_skills",
+        "questions": [
             {
                 "question_text": "Rate the agent's acknowledgement of the customer's frustration or urgency.",
                 "answer_type": "likert_0_2",
@@ -323,15 +330,45 @@ TEMPLATE_QUESTIONS = [
                     "1": "Agent acknowledged frustration but used only generic phrases without referencing the specific issue.",
                     "2": "Agent acknowledged the specific issue causing frustration and demonstrated understanding of the impact."
                 },
-                "default_answer": None,
+                "scores": {"0": 0, "1": 5, "2": 10},
                 "na_eligible": True,
                 "critical_fail": False,
+                "critical_fail_level": None,
+                "examples": []
+            },
+            {
+                "question_text": "Did the agent use the customer's name during the call?",
+                "answer_type": "binary",
+                "matching_method": "llm",
+                "keywords": [],
+                "answer_definitions": {"Yes": "Agent addressed the customer by name at least once during the call."},
+                "scores": {"Yes": 5, "No": 0},
+                "na_eligible": True,
+                "critical_fail": False,
+                "critical_fail_level": None,
+                "examples": []
+            },
+            {
+                "question_text": "Rate the agent's overall communication clarity and professionalism.",
+                "answer_type": "likert_0_2",
+                "matching_method": "llm",
+                "keywords": [],
+                "answer_definitions": {
+                    "0": "Agent was unclear, used excessive jargon, or was unprofessional in tone.",
+                    "1": "Agent communicated adequately but could improve on clarity or tone.",
+                    "2": "Agent communicated clearly, used appropriate language, and maintained a professional tone throughout."
+                },
+                "scores": {"0": 0, "1": 5, "2": 10},
+                "na_eligible": True,
+                "critical_fail": False,
+                "critical_fail_level": None,
                 "examples": []
             },
         ]
     },
     {
         "category": "Troubleshooting & Resolution",
+        "section_category": "troubleshooting_resolution",
         "questions": [
             {
                 "question_text": "Did the agent follow a logical troubleshooting sequence?",
@@ -343,9 +380,10 @@ TEMPLATE_QUESTIONS = [
                     "1": "Agent checked some relevant factors but missed important diagnostic steps.",
                     "2": "Agent followed a clear, logical sequence and identified the root cause."
                 },
-                "default_answer": None,
+                "scores": {"0": 0, "1": 5, "2": 10},
                 "na_eligible": True,
                 "critical_fail": False,
+                "critical_fail_level": None,
                 "examples": []
             },
             {
@@ -353,13 +391,11 @@ TEMPLATE_QUESTIONS = [
                 "answer_type": "binary",
                 "matching_method": "llm",
                 "keywords": [],
-                "answer_definitions": {
-                    "Yes": "Agent provided either a concrete resolution or a clear escalation path with specific actions or timelines.",
-                    "No": "Agent ended the call without providing clear next steps."
-                },
-                "default_answer": None,
+                "answer_definitions": {"Yes": "Agent provided either a concrete resolution or a clear escalation path with specific actions or timelines."},
+                "scores": {"Yes": 10, "No": 0},
                 "na_eligible": True,
                 "critical_fail": False,
+                "critical_fail_level": None,
                 "examples": []
             },
             {
@@ -367,65 +403,29 @@ TEMPLATE_QUESTIONS = [
                 "answer_type": "binary",
                 "matching_method": "llm",
                 "keywords": [],
-                "answer_definitions": {
-                    "Yes": "All factual statements made by the agent appear accurate based on the transcript context.",
-                    "No": "Agent made at least one factually incorrect statement."
-                },
-                "default_answer": "Yes",
+                "answer_definitions": {"Yes": "All factual statements made by the agent appear accurate based on the transcript context."},
+                "scores": {"Yes": 5, "No": 0},
                 "na_eligible": True,
                 "critical_fail": True,
+                "critical_fail_level": "zero_scorecard",
                 "examples": []
             },
         ]
     },
     {
-        "category": "Closing",
-        "questions": [
-            {
-                "question_text": "Did the agent ask if the customer had any other questions before closing?",
-                "answer_type": "binary",
-                "matching_method": "hybrid",
-                "keywords": ["any other questions", "anything else", "any other issues"],
-                "answer_definitions": {
-                    "Yes": "Agent explicitly asked whether the customer had additional questions or issues.",
-                    "No": "Agent closed the call without checking if the customer had additional needs."
-                },
-                "default_answer": None,
-                "na_eligible": True,
-                "critical_fail": False,
-                "examples": []
-            },
-            {
-                "question_text": "Did the agent provide a reference number or summary of what was agreed upon?",
-                "answer_type": "binary",
-                "matching_method": "hybrid",
-                "keywords": ["reference number", "ticket", "TKT-", "case number"],
-                "answer_definitions": {
-                    "Yes": "Agent provided at least one of: a reference/ticket number, or a verbal summary of the agreed-upon actions.",
-                    "No": "Agent ended the call without providing a reference number or summarizing what was agreed."
-                },
-                "default_answer": None,
-                "na_eligible": True,
-                "critical_fail": False,
-                "examples": []
-            },
-        ]
-    },
-    {
-        "category": "Compliance & Policy",
+        "category": "Compliance",
+        "section_category": "compliance",
         "questions": [
             {
                 "question_text": "Did the agent read the required compliance disclaimer when applicable?",
                 "answer_type": "binary",
                 "matching_method": "hybrid",
                 "keywords": ["for quality", "this call may be", "recorded", "monitoring purposes"],
-                "answer_definitions": {
-                    "Yes": "Agent read or referenced the required compliance disclaimer during the call.",
-                    "No": "Agent did not read or reference any compliance disclaimer."
-                },
-                "default_answer": None,
+                "answer_definitions": {"Yes": "Agent read or referenced the required compliance disclaimer during the call."},
+                "scores": {"Yes": 10, "No": 0},
                 "na_eligible": True,
                 "critical_fail": False,
+                "critical_fail_level": None,
                 "examples": []
             },
             {
@@ -433,47 +433,41 @@ TEMPLATE_QUESTIONS = [
                 "answer_type": "binary",
                 "matching_method": "llm",
                 "keywords": [],
-                "answer_definitions": {
-                    "Yes": "Agent followed the correct policy for refunds or cancellations as described in the transcript.",
-                    "No": "Agent deviated from the expected refund/cancellation process."
-                },
-                "default_answer": None,
+                "answer_definitions": {"Yes": "Agent followed the correct policy for refunds or cancellations as described in the transcript."},
+                "scores": {"Yes": 10, "No": 0},
                 "na_eligible": True,
                 "critical_fail": True,
+                "critical_fail_level": "zero_section",
                 "examples": []
             },
         ]
     },
     {
-        "category": "Communication Quality",
+        "category": "Closing & Next Steps",
+        "section_category": "closing_next_steps",
         "questions": [
             {
-                "question_text": "Rate the agent's overall communication clarity and professionalism.",
-                "answer_type": "likert_0_2",
-                "matching_method": "llm",
-                "keywords": [],
-                "answer_definitions": {
-                    "0": "Agent was unclear, used excessive jargon, or was unprofessional in tone.",
-                    "1": "Agent communicated adequately but could improve on clarity or tone.",
-                    "2": "Agent communicated clearly, used appropriate language, and maintained a professional tone throughout."
-                },
-                "default_answer": None,
+                "question_text": "Did the agent ask if the customer had any other questions before closing?",
+                "answer_type": "binary",
+                "matching_method": "hybrid",
+                "keywords": ["any other questions", "anything else", "any other issues"],
+                "answer_definitions": {"Yes": "Agent explicitly asked whether the customer had additional questions or issues."},
+                "scores": {"Yes": 5, "No": 0},
                 "na_eligible": True,
                 "critical_fail": False,
+                "critical_fail_level": None,
                 "examples": []
             },
             {
-                "question_text": "Did the agent use the customer's name during the call?",
+                "question_text": "Did the agent provide a reference number or summary of what was agreed upon?",
                 "answer_type": "binary",
-                "matching_method": "llm",
-                "keywords": [],
-                "answer_definitions": {
-                    "Yes": "Agent addressed the customer by name at least once during the call.",
-                    "No": "Agent never used the customer's name."
-                },
-                "default_answer": None,
+                "matching_method": "hybrid",
+                "keywords": ["reference number", "ticket", "TKT-", "case number"],
+                "answer_definitions": {"Yes": "Agent provided at least one of: a reference/ticket number, or a verbal summary of the agreed-upon actions."},
+                "scores": {"Yes": 5, "No": 0},
                 "na_eligible": True,
                 "critical_fail": False,
+                "critical_fail_level": None,
                 "examples": []
             },
         ]
@@ -485,47 +479,6 @@ TEMPLATE_QUESTIONS = [
 async def get_templates():
     """Return the template question library."""
     return TEMPLATE_QUESTIONS
-
-
-# --- Forms CRUD ---
-
-@app.get("/api/forms")
-async def list_forms():
-    """List all saved evaluation forms."""
-    return list(stored_forms.values())
-
-
-@app.get("/api/forms/{form_id}")
-async def get_form(form_id: str):
-    if form_id not in stored_forms:
-        raise HTTPException(status_code=404, detail="Form not found")
-    return stored_forms[form_id]
-
-
-@app.post("/api/forms")
-async def save_form(form: dict):
-    """Save an evaluation form. Auto-generates form_id if not provided."""
-    if not form.get("form_id"):
-        form["form_id"] = f"form_{uuid.uuid4().hex[:8]}"
-    # Auto-generate question IDs for questions that don't have them
-    q_counter = 1
-    for section in form.get("sections", []):
-        for question in section.get("questions", []):
-            if not question.get("question_id"):
-                question["question_id"] = f"q_{q_counter:03d}"
-                q_counter += 1
-            else:
-                q_counter = max(q_counter, int(question["question_id"].split("_")[1]) + 1) if question["question_id"].startswith("q_") else q_counter
-    stored_forms[form["form_id"]] = form
-    return form
-
-
-@app.delete("/api/forms/{form_id}")
-async def delete_form(form_id: str):
-    if form_id not in stored_forms:
-        raise HTTPException(status_code=404, detail="Form not found")
-    del stored_forms[form_id]
-    return {"status": "deleted"}
 
 
 # --- Scorecards CRUD ---
@@ -546,6 +499,19 @@ async def get_scorecard(scorecard_id: str):
 async def save_scorecard(scorecard: dict):
     if not scorecard.get("scorecard_id"):
         scorecard["scorecard_id"] = f"sc_{uuid.uuid4().hex[:8]}"
+    # Auto-generate question IDs
+    q_counter = 1
+    for section in scorecard.get("sections", []):
+        for question in section.get("questions", []):
+            if not question.get("question_id"):
+                question["question_id"] = f"q_{q_counter:03d}"
+                q_counter += 1
+            else:
+                if question["question_id"].startswith("q_"):
+                    try:
+                        q_counter = max(q_counter, int(question["question_id"].split("_")[1]) + 1)
+                    except (ValueError, IndexError):
+                        pass
     stored_scorecards[scorecard["scorecard_id"]] = scorecard
     return scorecard
 
@@ -562,7 +528,7 @@ async def delete_scorecard(scorecard_id: str):
 
 @app.post("/api/grade-with-scorecard")
 async def grade_with_scorecard(request: GradeWithScorecardRequest):
-    """Grade a transcript using a stored scorecard (which references stored forms)."""
+    """Grade a transcript using a stored scorecard."""
     api_key = os.environ.get("ANTHROPIC_API_KEY", "")
     if not api_key or api_key == "your-api-key-here":
         raise HTTPException(status_code=400, detail="ANTHROPIC_API_KEY not configured in .env.local")
@@ -573,16 +539,7 @@ async def grade_with_scorecard(request: GradeWithScorecardRequest):
 
     try:
         transcript = parse_transcript(request.transcript)
-
-        # Resolve forms from stored forms
-        forms = []
-        for form_id in sc_data.get("form_ids", []):
-            form_data = stored_forms.get(form_id)
-            if not form_data:
-                raise HTTPException(status_code=404, detail=f"Form {form_id} not found")
-            forms.append(parse_form(form_data))
-
-        scorecard = parse_scorecard(sc_data, forms)
+        scorecard = parse_scorecard(sc_data)
         engine = GradingEngine(api_key)
         result = engine.grade_call(scorecard, transcript)
         result_dict = result_to_dict(result, scorecard)
@@ -605,7 +562,7 @@ async def grade_with_scorecard(request: GradeWithScorecardRequest):
 
 @app.get("/api/results")
 async def list_results():
-    """Return all grading results for the dashboard (without full transcript data)."""
+    """Return all grading results for the dashboard."""
     summary = []
     for r in stored_results:
         summary.append({
@@ -634,31 +591,140 @@ async def get_result(result_id: str):
     raise HTTPException(status_code=404, detail="Result not found")
 
 
+# --- Import Questions (AI-powered) ---
+
+@app.post("/api/import-questions")
+async def import_questions(request: ImportQuestionsRequest):
+    """Parse uploaded spreadsheet content and extract evaluation questions using LLM."""
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not api_key or api_key == "your-api-key-here":
+        raise HTTPException(status_code=400, detail="ANTHROPIC_API_KEY not configured")
+
+    if not request.file_content or len(request.file_content) == 0:
+        raise HTTPException(status_code=400, detail="File content is empty")
+
+    client = anthropic.Anthropic(api_key=api_key)
+
+    user_message = json.dumps({
+        "file_content": request.file_content,
+        "file_name": request.file_name,
+        "sheet_name": request.sheet_name,
+    })
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=4096,
+            system=IMPORT_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": user_message}],
+        )
+        raw = response.content[0].text.strip()
+
+        # Extract JSON
+        json_match = re.search(r"\{.*\}", raw, re.DOTALL)
+        if not json_match:
+            raise HTTPException(status_code=500, detail="Could not parse AI response")
+
+        parsed = json.loads(json_match.group())
+        questions = parsed.get("questions", [])
+
+        # Enforce 20 question max
+        if len(questions) > 20:
+            questions = questions[:20]
+            parsed["questions"] = questions
+            parsed["truncated"] = True
+            parsed["truncation_message"] = f"Only the first 20 questions were imported — scorecards have a 20-question maximum."
+
+        return parsed
+    except anthropic.APIError as e:
+        raise HTTPException(status_code=500, detail=f"AI service error: {str(e)}")
+    except json.JSONDecodeError:
+        # Retry once
+        try:
+            response = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=4096,
+                system=IMPORT_SYSTEM_PROMPT,
+                messages=[{"role": "user", "content": user_message}],
+            )
+            raw = response.content[0].text.strip()
+            json_match = re.search(r"\{.*\}", raw, re.DOTALL)
+            if not json_match:
+                raise HTTPException(status_code=500, detail="Could not process this file. Try simplifying your spreadsheet.")
+            return json.loads(json_match.group())
+        except Exception:
+            raise HTTPException(status_code=500, detail="Could not process this file. Try simplifying your spreadsheet and re-upload.")
+
+
+
+# --- Auto-Suggest (Refine with AI) ---
+
+@app.post("/api/auto-suggest")
+async def auto_suggest(request: AutoSuggestRequest):
+    """Generate refined question text, answer definitions, and examples using LLM."""
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not api_key or api_key == "your-api-key-here":
+        raise HTTPException(status_code=400, detail="ANTHROPIC_API_KEY not configured")
+
+    client = anthropic.Anthropic(api_key=api_key)
+
+    user_message = json.dumps({
+        "question_text": request.question_text,
+        "answer_type": request.answer_type,
+        "section_category": request.section_category,
+        "existing_answer_text": request.existing_answer_text,
+    })
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=4096,
+            system=AUTO_SUGGEST_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": user_message}],
+        )
+        raw = response.content[0].text.strip()
+
+        # Extract JSON
+        json_match = re.search(r"\{.*\}", raw, re.DOTALL)
+        if not json_match:
+            raise HTTPException(status_code=500, detail="Could not generate suggestions. Try again or write definitions manually.")
+
+        return json.loads(json_match.group())
+    except anthropic.APIError as e:
+        raise HTTPException(status_code=500, detail=f"AI service error: {str(e)}")
+    except json.JSONDecodeError:
+        # Retry once
+        try:
+            response = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=4096,
+                system=AUTO_SUGGEST_SYSTEM_PROMPT,
+                messages=[{"role": "user", "content": user_message}],
+            )
+            raw = response.content[0].text.strip()
+            json_match = re.search(r"\{.*\}", raw, re.DOTALL)
+            if not json_match:
+                raise HTTPException(status_code=500, detail="Could not generate suggestions. Try again.")
+            return json.loads(json_match.group())
+        except Exception:
+            raise HTTPException(status_code=500, detail="Could not generate suggestions. Try again or write definitions manually.")
+
+
 # --- Seed sample data on startup ---
 
 @app.on_event("startup")
 async def seed_sample_data():
-    """Load sample evaluation forms and scorecards into storage on startup."""
+    """Load sample scorecards into storage on startup."""
     try:
-        with open(os.path.join(SAMPLE_DIR, "evaluation_form.json")) as f:
-            sample_form = json.load(f)
-        stored_forms[sample_form["form_id"]] = sample_form
-
         with open(os.path.join(SAMPLE_DIR, "scorecard.json")) as f:
             sample_sc = json.load(f)
-        sample_sc["form_ids"] = [sample_form["form_id"]]
         stored_scorecards[sample_sc["scorecard_id"]] = sample_sc
     except Exception as e:
         print(f"Warning: could not seed support sample data: {e}")
 
     try:
-        with open(os.path.join(SAMPLE_DIR, "evaluation_form_sales.json")) as f:
-            sales_form = json.load(f)
-        stored_forms[sales_form["form_id"]] = sales_form
-
         with open(os.path.join(SAMPLE_DIR, "scorecard_sales.json")) as f:
             sales_sc = json.load(f)
-        sales_sc["form_ids"] = [sales_form["form_id"]]
         stored_scorecards[sales_sc["scorecard_id"]] = sales_sc
     except Exception as e:
         print(f"Warning: could not seed sales sample data: {e}")

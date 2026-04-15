@@ -10,6 +10,17 @@ class AnswerType(str, Enum):
     LIKERT = "likert_0_2"
 
 
+class SectionCategory(str, Enum):
+    OPENING_GREETING = "opening_greeting"
+    DISCOVERY_NEEDS_ASSESSMENT = "discovery_needs_assessment"
+    PRODUCT_KNOWLEDGE_PITCH = "product_knowledge_pitch"
+    TROUBLESHOOTING_RESOLUTION = "troubleshooting_resolution"
+    EMPATHY_SOFT_SKILLS = "empathy_soft_skills"
+    COMPLIANCE = "compliance"
+    CLOSING_NEXT_STEPS = "closing_next_steps"
+    CUSTOM = "custom"
+
+
 class MatchingMethod(str, Enum):
     KEYWORD = "keyword"
     LLM = "llm"
@@ -29,11 +40,12 @@ class Question:
     question_text: str
     answer_type: AnswerType
     answer_definitions: dict[str, str]
+    scores: dict[str, int]  # e.g. {"Yes": 10, "No": 0} or {"0": 0, "1": 5, "2": 10}
     matching_method: MatchingMethod = MatchingMethod.LLM
     keywords: list[str] = field(default_factory=list)
-    default_answer: Optional[str] = None
     na_eligible: bool = True
     critical_fail: bool = False
+    critical_fail_level: Optional[str] = None  # "zero_scorecard", "zero_section", or None
     examples: list[Example] = field(default_factory=list)
 
 
@@ -42,28 +54,14 @@ class Section:
     name: str
     questions: list[Question]
     description: str = ""
-
-
-@dataclass
-class EvaluationForm:
-    form_id: str
-    name: str
-    sections: list[Section]
-
-
-@dataclass
-class ScoreMapping:
-    question_id: str
-    scores: dict[str, int]  # e.g. {"Yes": 10, "No": 0} or {"0": 0, "1": 5, "2": 10}
+    category: str = ""
 
 
 @dataclass
 class ScorecardConfig:
     scorecard_id: str
     name: str
-    forms: list[EvaluationForm]
-    score_mappings: list[ScoreMapping]
-    critical_fail_behavior: str = "flag"  # "zero" or "flag"
+    sections: list[Section]
     min_duration_seconds: int = 30
 
 
@@ -102,12 +100,12 @@ class QuestionResult:
 
 
 @dataclass
-class FormScore:
-    form_id: str
-    form_name: str
+class SectionScore:
+    section_name: str
     points_earned: int
     points_possible: int
     percentage: float
+    critical_fail_triggered: bool = False
 
 
 @dataclass
@@ -115,8 +113,9 @@ class GradingResult:
     call_id: str
     scorecard_id: str
     question_results: list[QuestionResult]
-    form_scores: list[FormScore]
+    section_scores: list[SectionScore]
     cumulative_score: float
     critical_fail_triggered: bool
     critical_fail_questions: list[str]
-    final_score: float  # After critical fail behavior applied
+    critical_fail_levels: list[str] = field(default_factory=list)
+    final_score: float = 0.0

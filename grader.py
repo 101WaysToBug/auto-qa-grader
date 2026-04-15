@@ -9,14 +9,12 @@ import anthropic
 from models import (
     AnswerType,
     CallMetadata,
-    EvaluationForm,
-    FormScore,
     GradingResult,
     MatchingMethod,
     Question,
     QuestionResult,
-    ScoreMapping,
     ScorecardConfig,
+    SectionScore,
     Transcript,
     Utterance,
 )
@@ -92,7 +90,6 @@ class LLMGrader:
                 "question_text": q.question_text,
                 "answer_type": q.answer_type.value,
                 "answer_definitions": q.answer_definitions,
-                "default_answer": q.default_answer,
                 "na_eligible": q.na_eligible,
                 "examples": [
                     {
@@ -248,83 +245,80 @@ class GradingEngine:
             )
 
         all_results: list[QuestionResult] = []
-        score_map = {sm.question_id: sm.scores for sm in scorecard.score_mappings}
+        binary_llm_questions = []
+        likert_questions = []
 
-        for form in scorecard.forms:
-            binary_llm_questions = []
-            likert_questions = []
+        for section in scorecard.sections:
+            for question in section.questions:
+                result = None
 
-            for section in form.sections:
-                for question in section.questions:
-                    result = None
-
-                    # Phase 1: Route by matching method
-                    if question.matching_method == MatchingMethod.KEYWORD:
-                        result = self.keyword_matcher.match(question, transcript)
-                        if result is None:
-                            # Keyword didn't match — answer is No
-                            result = QuestionResult(
-                                question_id=question.question_id,
-                                decision_stage=2,
-                                answer="No",
-                                confidence=100,
-                                reasoning="No matching keywords found in agent speech.",
-                                transcript_evidence=None,
-                                method="keyword_match",
-                            )
-
-                    elif question.matching_method == MatchingMethod.HYBRID:
-                        result = self.keyword_matcher.match(question, transcript)
-                        if result:
-                            result.method = "hybrid_keyword"
-                        else:
-                            # Keyword didn't match — fall through to LLM
-                            binary_llm_questions.append(question)
-
-                    elif question.matching_method == MatchingMethod.LLM:
-                        if question.answer_type == AnswerType.BINARY:
-                            binary_llm_questions.append(question)
-                        else:
-                            likert_questions.append(question)
-
-                    if result:
-                        all_results.append(result)
-
-            # Phase 2: Batch LLM calls (max 10 per call)
-            print(f"  Grading form: {form.name}")
-
-            if binary_llm_questions:
-                print(
-                    f"    -> {len(binary_llm_questions)} binary questions -> Haiku"
-                )
-                for i in range(0, len(binary_llm_questions), 10):
-                    batch = binary_llm_questions[i : i + 10]
-                    llm_results = self.llm_grader.grade_batch(
-                        batch, transcript, AnswerType.BINARY
-                    )
-                    # Tag hybrid fallback results
-                    for r in llm_results:
-                        q = next(
-                            (q for q in batch if q.question_id == r.question_id), None
+                # Phase 1: Route by matching method
+                if question.matching_method == MatchingMethod.KEYWORD:
+                    result = self.keyword_matcher.match(question, transcript)
+                    if result is None:
+                        # Keyword didn't match — answer is No
+                        result = QuestionResult(
+                            question_id=question.question_id,
+                            decision_stage=2,
+                            answer="No",
+                            confidence=100,
+                            reasoning="No matching keywords found in agent speech.",
+                            transcript_evidence=None,
+                            method="keyword_match",
                         )
-                        if q and q.matching_method == MatchingMethod.HYBRID:
-                            r.method = "hybrid_llm"
-                    all_results.extend(llm_results)
 
-            if likert_questions:
-                print(
-                    f"    -> {len(likert_questions)} likert questions -> Sonnet"
+                elif question.matching_method == MatchingMethod.HYBRID:
+                    result = self.keyword_matcher.match(question, transcript)
+                    if result:
+                        result.method = "hybrid_keyword"
+                    else:
+                        # Keyword didn't match — fall through to LLM
+                        binary_llm_questions.append(question)
+
+                elif question.matching_method == MatchingMethod.LLM:
+                    if question.answer_type == AnswerType.BINARY:
+                        binary_llm_questions.append(question)
+                    else:
+                        likert_questions.append(question)
+
+                if result:
+                    all_results.append(result)
+
+        # Phase 2: Batch LLM calls (max 10 per call)
+        print(f"  Grading scorecard: {scorecard.name}")
+
+        if binary_llm_questions:
+            print(
+                f"    -> {len(binary_llm_questions)} binary questions -> Haiku"
+            )
+            for i in range(0, len(binary_llm_questions), 10):
+                batch = binary_llm_questions[i : i + 10]
+                llm_results = self.llm_grader.grade_batch(
+                    batch, transcript, AnswerType.BINARY
                 )
-                for i in range(0, len(likert_questions), 10):
-                    batch = likert_questions[i : i + 10]
-                    llm_results = self.llm_grader.grade_batch(
-                        batch, transcript, AnswerType.LIKERT
+                # Tag hybrid fallback results
+                for r in llm_results:
+                    q = next(
+                        (q for q in batch if q.question_id == r.question_id), None
                     )
-                    all_results.extend(llm_results)
+                    if q and q.matching_method == MatchingMethod.HYBRID:
+                        r.method = "hybrid_llm"
+                all_results.extend(llm_results)
+
+        if likert_questions:
+            print(
+                f"    -> {len(likert_questions)} likert questions -> Sonnet"
+            )
+            for i in range(0, len(likert_questions), 10):
+                batch = likert_questions[i : i + 10]
+                llm_results = self.llm_grader.grade_batch(
+                    batch, transcript, AnswerType.LIKERT
+                )
+                all_results.extend(llm_results)
 
         # Phase 5: Scoring
         return self._calculate_scores(
-            transcript.call_metadata.call_id, scorecard, all_results, score_map
+            transcript.call_metadata.call_id, scorecard, all_results
         )
 
     def _calculate_scores(
@@ -332,39 +326,71 @@ class GradingEngine:
         call_id: str,
         scorecard: ScorecardConfig,
         results: list[QuestionResult],
-        score_map: dict[str, dict[str, int]],
     ) -> GradingResult:
-        # Map points to each result
+        # Build lookup: question_id -> Question object and section name
+        question_lookup: dict[str, Question] = {}
+        question_to_section: dict[str, str] = {}
+        for section in scorecard.sections:
+            for q in section.questions:
+                question_lookup[q.question_id] = q
+                question_to_section[q.question_id] = section.name
+
+        # Map points to each result using scores from the Question itself
         for r in results:
-            if r.question_id in score_map and r.answer != "N/A":
-                mapping = score_map[r.question_id]
-                r.points_earned = mapping.get(r.answer, 0)
-                r.points_possible = max(mapping.values())
+            q = question_lookup.get(r.question_id)
+            if q and r.answer != "N/A":
+                r.points_earned = q.scores.get(r.answer, 0)
+                r.points_possible = max(q.scores.values()) if q.scores else 0
             elif r.answer == "N/A":
                 r.points_earned = 0
                 r.points_possible = 0
 
-        # Per-form sub-scores
-        form_scores = []
-        for form in scorecard.forms:
-            form_q_ids = set()
-            for section in form.sections:
-                for q in section.questions:
-                    form_q_ids.add(q.question_id)
+        # Critical fail check
+        critical_fails = []
+        critical_fail_levels = []
+        for r in results:
+            q = question_lookup.get(r.question_id)
+            if q and q.critical_fail and r.answer != "N/A":
+                # Binary: "No" is a fail. Likert: "0" is a fail.
+                if r.answer in ("No", "0"):
+                    critical_fails.append(r.question_id)
+                    critical_fail_levels.append(q.critical_fail_level or "zero_scorecard")
 
-            form_results = [r for r in results if r.question_id in form_q_ids]
-            scored = [r for r in form_results if r.answer != "N/A"]
+        critical_triggered = len(critical_fails) > 0
+
+        # Determine which sections are zeroed by critical fails
+        zeroed_sections: set[str] = set()
+        zero_scorecard = False
+        for qid, level in zip(critical_fails, critical_fail_levels):
+            if level == "zero_scorecard":
+                zero_scorecard = True
+            elif level == "zero_section":
+                section_name = question_to_section.get(qid)
+                if section_name:
+                    zeroed_sections.add(section_name)
+
+        # Per-section scores
+        section_scores = []
+        for section in scorecard.sections:
+            sec_q_ids = {q.question_id for q in section.questions}
+            sec_results = [r for r in results if r.question_id in sec_q_ids]
+            scored = [r for r in sec_results if r.answer != "N/A"]
             earned = sum(r.points_earned for r in scored)
             possible = sum(r.points_possible for r in scored)
             pct = (earned / possible * 100) if possible > 0 else 0.0
 
-            form_scores.append(
-                FormScore(
-                    form_id=form.form_id,
-                    form_name=form.name,
+            sec_critical_fail = section.name in zeroed_sections
+            if sec_critical_fail or zero_scorecard:
+                pct = 0.0
+                earned = 0
+
+            section_scores.append(
+                SectionScore(
+                    section_name=section.name,
                     points_earned=earned,
                     points_possible=possible,
                     percentage=round(pct, 1),
+                    critical_fail_triggered=sec_critical_fail,
                 )
             )
 
@@ -374,34 +400,28 @@ class GradingEngine:
         total_possible = sum(r.points_possible for r in all_scored)
         cumulative = (total_earned / total_possible * 100) if total_possible > 0 else 0.0
 
-        # Critical fail check
-        critical_q_ids = set()
-        for form in scorecard.forms:
-            for section in form.sections:
-                for q in section.questions:
-                    if q.critical_fail:
-                        critical_q_ids.add(q.question_id)
-
-        critical_fails = []
-        for r in results:
-            if r.question_id in critical_q_ids and r.answer != "N/A":
-                # Binary: "No" is a fail. Likert: "0" is a fail.
-                if r.answer in ("No", "0"):
-                    critical_fails.append(r.question_id)
-
-        critical_triggered = len(critical_fails) > 0
+        # Apply critical fail behavior to final score
         final_score = cumulative
-        if critical_triggered and scorecard.critical_fail_behavior == "zero":
+        if zero_scorecard:
             final_score = 0.0
+        elif zeroed_sections:
+            # Recalculate final score with zeroed sections
+            adjusted_earned = total_earned
+            for section_name in zeroed_sections:
+                for r in all_scored:
+                    if question_to_section.get(r.question_id) == section_name:
+                        adjusted_earned -= r.points_earned
+            final_score = (adjusted_earned / total_possible * 100) if total_possible > 0 else 0.0
 
         return GradingResult(
             call_id=call_id,
             scorecard_id=scorecard.scorecard_id,
             question_results=results,
-            form_scores=form_scores,
+            section_scores=section_scores,
             cumulative_score=round(cumulative, 1),
             critical_fail_triggered=critical_triggered,
             critical_fail_questions=critical_fails,
+            critical_fail_levels=critical_fail_levels,
             final_score=round(final_score, 1),
         )
 
@@ -409,25 +429,24 @@ class GradingEngine:
         self, call_id: str, scorecard: ScorecardConfig, reason: str
     ) -> GradingResult:
         results = []
-        for form in scorecard.forms:
-            for section in form.sections:
-                for q in section.questions:
-                    results.append(
-                        QuestionResult(
-                            question_id=q.question_id,
-                            decision_stage=3,
-                            answer="N/A",
-                            confidence=0,
-                            reasoning=reason,
-                            transcript_evidence=None,
-                            method="skipped",
-                        )
+        for section in scorecard.sections:
+            for q in section.questions:
+                results.append(
+                    QuestionResult(
+                        question_id=q.question_id,
+                        decision_stage=3,
+                        answer="N/A",
+                        confidence=0,
+                        reasoning=reason,
+                        transcript_evidence=None,
+                        method="skipped",
                     )
+                )
         return GradingResult(
             call_id=call_id,
             scorecard_id=scorecard.scorecard_id,
             question_results=results,
-            form_scores=[],
+            section_scores=[],
             cumulative_score=0.0,
             critical_fail_triggered=False,
             critical_fail_questions=[],

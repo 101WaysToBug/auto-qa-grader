@@ -1,18 +1,192 @@
 {
   "scorecard_id": "sc_support_q2_2026",
   "name": "Support Team — Q2 2026",
-  "critical_fail_behavior": "flag",
   "min_duration_seconds": 30,
-  "score_mappings": [
-    {"question_id": "q_001", "scores": {"Yes": 5, "No": 0}},
-    {"question_id": "q_002", "scores": {"Yes": 10, "No": 0}},
-    {"question_id": "q_003", "scores": {"Yes": 5, "No": 0}},
-    {"question_id": "q_004", "scores": {"Yes": 5, "No": 0}},
-    {"question_id": "q_005", "scores": {"0": 0, "1": 5, "2": 10}},
-    {"question_id": "q_006", "scores": {"0": 0, "1": 5, "2": 10}},
-    {"question_id": "q_007", "scores": {"Yes": 10, "No": 0}},
-    {"question_id": "q_008", "scores": {"Yes": 5, "No": 0}},
-    {"question_id": "q_009", "scores": {"Yes": 5, "No": 0}},
-    {"question_id": "q_010", "scores": {"Yes": 5, "No": 0}}
+  "sections": [
+    {
+      "name": "Opening & Verification",
+      "category": "opening_greeting",
+      "description": "Agent greeting and identity verification",
+      "questions": [
+        {
+          "question_id": "q_001",
+          "question_text": "Did the agent greet the customer and introduce themselves by name?",
+          "answer_type": "binary",
+          "matching_method": "llm",
+          "keywords": [],
+          "answer_definitions": {
+            "Yes": "Agent stated their name during the greeting within the first 15 seconds of the call."
+          },
+          "scores": {"Yes": 5, "No": 0},
+          "na_eligible": true,
+          "critical_fail": false,
+          "examples": []
+        },
+        {
+          "question_id": "q_002",
+          "question_text": "Did the agent verify the customer's identity (account number, registered phone, or email) before discussing account details?",
+          "answer_type": "binary",
+          "matching_method": "hybrid",
+          "keywords": ["registered email", "registered phone", "account number", "can you give me your"],
+          "answer_definitions": {
+            "Yes": "Agent asked for and received at least one identity verification element (account number, registered phone, or email) before accessing or discussing account-specific information."
+          },
+          "scores": {"Yes": 10, "No": 0},
+          "na_eligible": false,
+          "critical_fail": true,
+          "critical_fail_level": "zero_scorecard",
+          "examples": []
+        }
+      ]
+    },
+    {
+      "name": "Issue Understanding",
+      "category": "discovery_needs_assessment",
+      "description": "How well the agent understood the customer's problem",
+      "questions": [
+        {
+          "question_id": "q_003",
+          "question_text": "Did the agent let the customer fully describe their issue before responding?",
+          "answer_type": "binary",
+          "matching_method": "llm",
+          "keywords": [],
+          "answer_definitions": {
+            "Yes": "Agent waited for the customer to finish describing their issue before jumping in with a response or solution. The customer completed their initial description without being interrupted."
+          },
+          "scores": {"Yes": 5, "No": 0},
+          "na_eligible": true,
+          "critical_fail": false,
+          "examples": []
+        },
+        {
+          "question_id": "q_004",
+          "question_text": "Did the agent restate or summarize the customer's issue to confirm understanding?",
+          "answer_type": "binary",
+          "matching_method": "llm",
+          "keywords": [],
+          "answer_definitions": {
+            "Yes": "Agent explicitly restated, paraphrased, or summarized the customer's issue back to them to confirm mutual understanding."
+          },
+          "scores": {"Yes": 5, "No": 0},
+          "na_eligible": true,
+          "critical_fail": false,
+          "examples": []
+        },
+        {
+          "question_id": "q_005",
+          "question_text": "Rate the agent's acknowledgement of the customer's frustration or urgency.",
+          "answer_type": "likert_0_2",
+          "matching_method": "llm",
+          "keywords": [],
+          "answer_definitions": {
+            "0": "Agent did not acknowledge the customer's frustration or urgency at any point in the call. No empathetic statement, no recognition of the problem's impact.",
+            "1": "Agent acknowledged frustration but used only generic phrases ('I understand', 'I'm sorry about that') without referencing the specific issue or its impact on the customer.",
+            "2": "Agent acknowledged the specific issue causing frustration, validated the customer's experience, and demonstrated understanding of the impact."
+          },
+          "scores": {"0": 0, "1": 5, "2": 10},
+          "na_eligible": true,
+          "critical_fail": false,
+          "examples": [
+            {
+              "transcript_excerpt": "Customer: 'This is the third time I'm calling! My messages haven't been sending for two days and I'm losing business!' Agent: 'I completely understand how frustrating that must be, especially when it's affecting your business directly. Two days without outbound messages is serious — let me prioritize getting this resolved for you right now.'",
+              "correct_answer": "2",
+              "reasoning": "Agent acknowledged the specific issue (messages not sending for two days), validated the business impact, and committed to immediate action."
+            },
+            {
+              "transcript_excerpt": "Customer: 'This is the third time I'm calling! My messages haven't been sending for two days and I'm losing business!' Agent: 'I understand. Let me look into your account.'",
+              "correct_answer": "1",
+              "reasoning": "Agent acknowledged ('I understand') but used a generic phrase without referencing the specific frustration or business impact."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Troubleshooting & Resolution",
+      "category": "troubleshooting_resolution",
+      "description": "Quality of the agent's troubleshooting and resolution",
+      "questions": [
+        {
+          "question_id": "q_006",
+          "question_text": "Did the agent follow a logical troubleshooting sequence for the reported issue type?",
+          "answer_type": "likert_0_2",
+          "matching_method": "llm",
+          "keywords": [],
+          "answer_definitions": {
+            "0": "Agent did not follow any discernible troubleshooting sequence. Jumped to conclusions without checking relevant account states, or gave generic advice unrelated to the specific issue.",
+            "1": "Agent checked some relevant factors but missed important diagnostic steps, or followed a sequence that was partially logical but skipped key checks.",
+            "2": "Agent followed a clear, logical sequence: verified account status, checked relevant system states, identified the root cause, and explained findings to the customer."
+          },
+          "scores": {"0": 0, "1": 5, "2": 10},
+          "na_eligible": true,
+          "critical_fail": false,
+          "examples": []
+        },
+        {
+          "question_id": "q_007",
+          "question_text": "Did the agent provide a clear resolution or escalation path before ending the call?",
+          "answer_type": "binary",
+          "matching_method": "llm",
+          "keywords": [],
+          "answer_definitions": {
+            "Yes": "Agent provided either a concrete resolution (steps to fix the issue) or a clear escalation path (who will follow up, when, and how). The customer should leave the call knowing exactly what happens next."
+          },
+          "scores": {"Yes": 10, "No": 0},
+          "na_eligible": true,
+          "critical_fail": false,
+          "examples": []
+        },
+        {
+          "question_id": "q_008",
+          "question_text": "Did the agent give accurate information? (Mark 'No' only if the agent stated something factually incorrect that was verifiable from the transcript.)",
+          "answer_type": "binary",
+          "matching_method": "llm",
+          "keywords": [],
+          "answer_definitions": {
+            "Yes": "All factual statements made by the agent appear accurate based on the transcript context. No demonstrably false claims were made."
+          },
+          "scores": {"Yes": 5, "No": 0},
+          "na_eligible": true,
+          "critical_fail": true,
+          "critical_fail_level": "zero_scorecard",
+          "examples": []
+        }
+      ]
+    },
+    {
+      "name": "Closing",
+      "category": "closing_next_steps",
+      "description": "How the agent wrapped up the call",
+      "questions": [
+        {
+          "question_id": "q_009",
+          "question_text": "Did the agent ask if the customer had any other questions or issues before closing?",
+          "answer_type": "binary",
+          "matching_method": "hybrid",
+          "keywords": ["any other questions", "anything else", "any other issues"],
+          "answer_definitions": {
+            "Yes": "Agent explicitly asked whether the customer had additional questions or issues before ending the call."
+          },
+          "scores": {"Yes": 5, "No": 0},
+          "na_eligible": true,
+          "critical_fail": false,
+          "examples": []
+        },
+        {
+          "question_id": "q_010",
+          "question_text": "Did the agent provide a reference number, ticket ID, or summary of what was agreed upon?",
+          "answer_type": "binary",
+          "matching_method": "hybrid",
+          "keywords": ["reference number", "ticket", "TKT-", "case number"],
+          "answer_definitions": {
+            "Yes": "Agent provided at least one of: a reference/ticket number, or a verbal summary of the agreed-upon actions and next steps before ending the call."
+          },
+          "scores": {"Yes": 5, "No": 0},
+          "na_eligible": true,
+          "critical_fail": false,
+          "examples": []
+        }
+      ]
+    }
   ]
 }

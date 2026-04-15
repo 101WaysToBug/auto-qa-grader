@@ -55,352 +55,59 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ============================================
-   LAYOUT SHELL
-   ============================================ */
-.shell {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  min-height: 100vh;
-}
-
-/* ============================================
-   SIDEBAR
-   ============================================ */
-.sidebar {
-  background: #ffffff;
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  z-index: 10;
-}
-
-.sidebar-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px 20px 20px;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-}
-
-.sidebar-logo {
-  width: 34px; height: 34px;
-  background: var(--accent);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 12px; color: #ffffff;
-  letter-spacing: -0.02em;
-}
-
-.sidebar-title {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-
+.shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+.sidebar { background: #ffffff; border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 10; }
+.sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 20px; border-bottom: 1px solid var(--border); }
+.sidebar-logo { width: 34px; height: 34px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: #ffffff; }
+.sidebar-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
 .sidebar-nav { flex: 1; padding: 16px 12px; }
-
-.nav-section-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-dim);
-  padding: 12px 12px 6px;
-  margin-top: 4px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--radius-xs);
-  cursor: pointer;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--text-muted);
-  transition: all 0.15s ease;
-  margin-bottom: 2px;
-  position: relative;
-}
-
-.nav-item:hover {
-  background: var(--bg-hover);
-  color: var(--text);
-}
-
-.nav-item.active {
-  background: var(--accent-glow-strong);
-  color: var(--accent-dark);
-  font-weight: 600;
-}
-
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 6px;
-  bottom: 6px;
-  width: 3px;
-  border-radius: 0 3px 3px 0;
-  background: var(--accent);
-}
-
-.nav-icon {
-  width: 20px;
-  text-align: center;
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-.sidebar-footer {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
-  font-size: 12px; color: var(--text-dim);
-  font-weight: 500;
-}
-
-.status-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--text-dim);
-  transition: all 0.3s;
-}
-.status-dot.connected {
-  background: var(--green);
-}
+.nav-section-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); padding: 12px 12px 6px; margin-top: 4px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-xs); cursor: pointer; font-size: 13.5px; font-weight: 500; color: var(--text-muted); transition: all 0.15s ease; margin-bottom: 2px; position: relative; }
+.nav-item:hover { background: var(--bg-hover); color: var(--text); }
+.nav-item.active { background: var(--accent-glow-strong); color: var(--accent-dark); font-weight: 600; }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 0 3px 3px 0; background: var(--accent); }
+.nav-icon { width: 20px; text-align: center; font-size: 14px; opacity: 0.8; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-dim); font-weight: 500; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); transition: all 0.3s; }
+.status-dot.connected { background: var(--green); }
 .status-dot.error { background: var(--red); }
-
-/* ============================================
-   CONTENT AREA
-   ============================================ */
-.content {
-  overflow-y: auto;
-  max-height: 100vh;
-  padding: 32px 40px;
-  position: relative;
-}
-
-.page-header {
-  margin-bottom: 28px;
-  position: relative;
-  z-index: 1;
-}
-
-.page-header h1 {
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 4px;
-  color: var(--text);
-}
-
-.page-header p {
-  color: var(--text-muted);
-  font-size: 14px;
-  font-weight: 400;
-}
-
-/* ============================================
-   BUTTONS
-   ============================================ */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: var(--radius-xs);
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  letter-spacing: 0.01em;
-  position: relative;
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: #ffffff;
-  box-shadow: var(--shadow-sm);
-}
-.btn-primary:hover {
-  background: var(--accent-dark);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-.btn-primary:active { transform: translateY(0); }
+.content { overflow-y: auto; max-height: 100vh; padding: 32px 40px; position: relative; }
+.page-header { margin-bottom: 28px; }
+.page-header h1 { font-family: var(--font-display); font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+.page-header p { color: var(--text-muted); font-size: 14px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: var(--radius-xs); border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 500; transition: all 0.2s; letter-spacing: 0.01em; position: relative; }
+.btn-primary { background: var(--accent); color: #ffffff; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-
-.btn-secondary {
-  background: #ffffff;
-  color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-}
-.btn-secondary:hover {
-  background: var(--bg-hover);
-  border-color: var(--border-light);
-}
-
-.btn-danger {
-  background: var(--red-soft);
-  color: var(--red);
-  border: 1px solid rgba(239, 68, 68, 0.15);
-}
-.btn-danger:hover { background: rgba(239, 68, 68, 0.15); }
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text-muted);
-  padding: 6px 12px;
-}
+.btn-secondary { background: #ffffff; color: var(--text); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.btn-secondary:hover { background: var(--bg-hover); border-color: var(--border-light); }
+.btn-danger { background: var(--red-soft); color: var(--red); border: 1px solid rgba(239,68,68,0.15); }
+.btn-danger:hover { background: rgba(239,68,68,0.15); }
+.btn-ghost { background: transparent; color: var(--text-muted); padding: 6px 12px; }
 .btn-ghost:hover { color: var(--text); background: #f0f2f5; }
-
 .btn-sm { padding: 6px 14px; font-size: 12px; }
-
 .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-
-/* ============================================
-   CARDS
-   ============================================ */
-.card {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 16px;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
-  position: relative;
-}
-
-.card:hover {
-  border-color: var(--border-light);
-  box-shadow: var(--shadow-md);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.card-header h3 {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-/* ============================================
-   FORM INPUTS
-   ============================================ */
-.form-group {
-  margin-bottom: 18px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 6px;
-}
-
-.form-input, .form-select, .form-textarea {
-  width: 100%;
-  padding: 10px 14px;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xs);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 14px;
-  transition: all 0.2s;
-}
-
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.form-input::placeholder, .form-textarea::placeholder {
-  color: var(--text-dim);
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
-  line-height: 1.6;
-}
-
-.form-select {
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 36px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.form-row-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
-}
-
-.form-check {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 13px;
-  cursor: pointer;
-  color: var(--text-muted);
-}
-
-.form-check input[type="checkbox"] {
-  accent-color: var(--accent);
-  width: 16px;
-  height: 16px;
-}
-
-/* ============================================
-   BADGES
-   ============================================ */
-.badge {
-  font-size: 10.5px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 100px;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
+.btn-ai { background: var(--purple-soft); color: var(--purple); border: 1px solid rgba(139,92,246,0.2); }
+.btn-ai:hover { background: rgba(139,92,246,0.15); }
+.btn-ai:disabled { opacity: 0.4; cursor: not-allowed; }
+.card { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; transition: all 0.2s ease; box-shadow: var(--shadow-sm); position: relative; }
+.card:hover { border-color: var(--border-light); box-shadow: var(--shadow-md); }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-header h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.form-input, .form-select, .form-textarea { width: 100%; padding: 10px 14px; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-xs); color: var(--text); font-family: var(--font-body); font-size: 14px; transition: all 0.2s; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text-dim); }
+.form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+.form-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.form-check { display: flex; align-items: center; gap: 9px; font-size: 13px; cursor: pointer; color: var(--text-muted); }
+.form-check input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; }
+.badge { font-size: 10.5px; font-weight: 600; padding: 3px 10px; border-radius: 100px; letter-spacing: 0.03em; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
 .badge-yes { background: var(--green-soft); color: #16a34a; border: 1px solid rgba(34,197,94,0.2); }
 .badge-no { background: var(--red-soft); color: #dc2626; border: 1px solid rgba(239,68,68,0.2); }
 .badge-na { background: #f3f4f6; color: var(--text-dim); border: 1px solid var(--border); }
@@ -412,698 +119,122 @@ body {
 .badge-method { font-size: 9.5px; color: var(--text-dim); background: #f9fafb; padding: 3px 8px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.06em; border: 1px solid var(--border); }
 .badge-binary { background: var(--blue-soft); color: #2563eb; border: 1px solid rgba(59,130,246,0.2); }
 .badge-likert { background: var(--purple-soft); color: #7c3aed; border: 1px solid rgba(139,92,246,0.2); }
-
 .badge-confidence { font-family: var(--font-mono); font-size: 11px; padding: 3px 8px; border-radius: 100px; }
 .badge-confidence.high { background: var(--green-soft); color: #16a34a; border: 1px solid rgba(34,197,94,0.2); }
 .badge-confidence.mid { background: var(--yellow-soft); color: #d97706; border: 1px solid rgba(245,158,11,0.2); }
 .badge-confidence.low { background: var(--red-soft); color: #dc2626; border: 1px solid rgba(239,68,68,0.2); }
-
-/* ============================================
-   TEMPLATE QUESTIONS PICKER
-   ============================================ */
-.template-picker {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  max-height: 420px;
-  overflow-y: auto;
-  margin-bottom: 16px;
-}
-
-.template-category {
-  border-bottom: 1px solid var(--border);
-}
-
+.badge-imported { background: var(--yellow-soft); color: #d97706; border: 1px solid rgba(245,158,11,0.2); font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; }
+.badge-ai-generated { background: var(--purple-soft); color: #7c3aed; border: 1px solid rgba(139,92,246,0.2); font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; }
+.template-picker { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); max-height: 420px; overflow-y: auto; margin-bottom: 16px; }
+.template-category { border-bottom: 1px solid var(--border); }
 .template-category:last-child { border-bottom: none; }
-
-.template-category-header {
-  padding: 13px 18px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transition: all 0.2s;
-  letter-spacing: -0.01em;
-}
-
+.template-category-header { padding: 13px 18px; font-size: 12.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; }
 .template-category-header:hover { background: #f9fafb; color: var(--text); }
-
-.template-category-header::after {
-  content: '+';
-  font-family: var(--font-mono);
-  font-size: 14px;
-  color: var(--text-dim);
-  transition: transform 0.2s;
-}
-
-.template-category.open .template-category-header::after {
-  content: '-';
-}
-
+.template-category-header::after { content: '+'; font-family: var(--font-mono); font-size: 14px; color: var(--text-dim); }
+.template-category.open .template-category-header::after { content: '-'; }
 .template-category-body { display: none; }
 .template-category.open .template-category-body { display: block; }
-
-.template-question-item {
-  padding: 12px 18px 12px 34px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: flex-start;
-  gap: 11px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.15s;
-  line-height: 1.5;
-}
-
+.template-question-item { padding: 12px 18px 12px 34px; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 11px; font-size: 13px; cursor: pointer; transition: all 0.15s; line-height: 1.5; }
 .template-question-item:hover { background: #f9fafb; }
-.template-question-item.selected {
-  background: var(--accent-glow);
-  border-left: 2px solid var(--accent);
-  padding-left: 32px;
-}
-
-.template-question-item input[type="checkbox"] {
-  accent-color: var(--accent);
-  margin-top: 3px;
-  flex-shrink: 0;
-  width: 15px;
-  height: 15px;
-}
-
-.template-question-meta {
-  display: flex;
-  gap: 6px;
-  margin-top: 6px;
-}
-
-/* ============================================
-   SCORE CARDS GRID
-   ============================================ */
-.score-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 32px;
-}
-
-.score-card {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
-}
-
-.score-card:hover {
-  box-shadow: var(--shadow-md);
-}
-
-.score-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-}
-
+.template-question-item.selected { background: var(--accent-glow); border-left: 2px solid var(--accent); padding-left: 32px; }
+.template-question-item input[type="checkbox"] { accent-color: var(--accent); margin-top: 3px; flex-shrink: 0; width: 15px; height: 15px; }
+.template-question-meta { display: flex; gap: 6px; margin-top: 6px; }
+.score-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 32px; }
+.score-card { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); }
+.score-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .score-card.primary::before { background: var(--accent); }
 .score-card.green::before { background: var(--green); }
 .score-card.blue::before { background: var(--blue); }
 .score-card.red::before { background: var(--red); }
-
-.score-card-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 10px;
-  position: relative;
-  z-index: 1;
-}
-
-.score-card-value {
-  font-family: var(--font-display);
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  position: relative;
-  z-index: 1;
-  color: var(--text);
-}
-
-.score-card-sub {
-  font-size: 11.5px;
-  color: var(--text-dim);
-  margin-top: 7px;
-  position: relative;
-  z-index: 1;
-  letter-spacing: 0.01em;
-}
-
-/* ============================================
-   DASHBOARD TABLE
-   ============================================ */
-.dashboard-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.dashboard-table th {
-  text-align: left;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  background: #f9fafb;
-}
-
-.dashboard-table td {
-  padding: 14px 16px;
-  font-size: 13.5px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.dashboard-table tr {
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.dashboard-table tbody tr:hover {
-  background: #f9fafb;
-}
-
-.score-pill {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 14px;
-  border-radius: 100px;
-  letter-spacing: 0.02em;
-}
-
+.score-card-label { font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+.score-card-value { font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: var(--text); }
+.score-card-sub { font-size: 11.5px; color: var(--text-dim); margin-top: 7px; }
+.dashboard-table { width: 100%; border-collapse: collapse; }
+.dashboard-table th { text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 12px 16px; border-bottom: 1px solid var(--border); background: #f9fafb; }
+.dashboard-table td { padding: 14px 16px; font-size: 13.5px; border-bottom: 1px solid #f0f0f0; }
+.dashboard-table tr { cursor: pointer; transition: background 0.15s; }
+.dashboard-table tbody tr:hover { background: #f9fafb; }
+.score-pill { font-family: var(--font-mono); font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 100px; }
 .score-pill.high { background: var(--green-soft); color: #16a34a; border: 1px solid rgba(34,197,94,0.2); }
 .score-pill.mid { background: var(--yellow-soft); color: #d97706; border: 1px solid rgba(245,158,11,0.2); }
 .score-pill.low { background: var(--red-soft); color: #dc2626; border: 1px solid rgba(239,68,68,0.2); }
-
-/* ============================================
-   CRITICAL FAIL BANNER
-   ============================================ */
-.critical-banner {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: var(--radius-sm);
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 24px;
-  font-size: 14px;
-}
-
-.critical-banner-icon {
-  width: 28px; height: 28px;
-  background: #ef4444;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: white;
-  font-weight: 800;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
+.critical-banner { background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius-sm); padding: 14px 20px; display: flex; align-items: center; gap: 14px; margin-bottom: 24px; font-size: 14px; }
+.critical-banner-icon { width: 28px; height: 28px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 13px; flex-shrink: 0; }
 .critical-banner strong { color: #dc2626; }
-
-/* ============================================
-   FORM SCORE BARS
-   ============================================ */
-.form-score-bar {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 16px 20px;
-  margin-bottom: 10px;
-  box-shadow: var(--shadow-sm);
-}
-
-.form-score-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-.form-score-name { font-weight: 500; letter-spacing: -0.01em; }
+.form-score-bar { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 20px; margin-bottom: 10px; box-shadow: var(--shadow-sm); }
+.form-score-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 12px; }
+.form-score-name { font-weight: 500; }
 .form-score-pct { color: var(--accent-dark); font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; }
-
-.form-score-track {
-  height: 6px;
-  background: #e5e7eb;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.form-score-fill {
-  height: 100%;
-  border-radius: 3px;
-  background: var(--accent);
-  transition: width 1s ease;
-  position: relative;
-}
-
-/* ============================================
-   QUESTION ROWS
-   ============================================ */
+.form-score-track { height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
+.form-score-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 1s ease; }
 .section-group { margin-bottom: 28px; }
-
-.section-group-header {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 14px; padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
-
-.section-group-header h3 {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.section-group-header .section-badge {
-  font-size: 10.5px; color: var(--text-dim);
-  background: #f3f4f6; padding: 3px 10px; border-radius: 100px;
-  border: 1px solid var(--border);
-  font-weight: 500;
-}
-
-.question-row {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  margin-bottom: 8px;
-  transition: all 0.15s ease;
-  box-shadow: var(--shadow-sm);
-}
-
-.question-row:hover {
-  border-color: var(--border-light);
-}
-
-.question-row.critical-failed {
-  border-color: rgba(239,68,68,0.25);
-  box-shadow: 0 0 0 1px rgba(239,68,68,0.05);
-}
-
-.question-row-main {
-  padding: 16px 22px;
-  cursor: pointer;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px;
-  align-items: start;
-}
-
+.section-group-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.section-group-header h3 { font-size: 14px; font-weight: 600; }
+.section-group-header .section-badge { font-size: 10.5px; color: var(--text-dim); background: #f3f4f6; padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border); font-weight: 500; }
+.question-row { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; transition: all 0.15s ease; box-shadow: var(--shadow-sm); }
+.question-row:hover { border-color: var(--border-light); }
+.question-row.critical-failed { border-color: rgba(239,68,68,0.25); }
+.question-row-main { padding: 16px 22px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
 .question-text { font-size: 13.5px; line-height: 1.55; }
-
-.question-badges {
-  display: flex; align-items: center; gap: 7px; flex-shrink: 0;
-}
-
-.question-detail {
-  display: none;
-  padding: 0 22px 18px;
-  border-top: 1px solid var(--border);
-}
-
+.question-badges { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.question-detail { display: none; padding: 0 22px 18px; border-top: 1px solid var(--border); }
 .question-row.expanded .question-detail { display: block; padding-top: 18px; }
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
-.detail-item label {
-  display: block; font-size: 10px; font-weight: 700;
-  color: var(--text-dim); text-transform: uppercase;
-  letter-spacing: 0.08em; margin-bottom: 5px;
-}
-
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.detail-item label { display: block; font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
 .detail-item span { font-size: 13px; }
-
-.reasoning-box {
-  background: #f9fafb;
-  border-radius: var(--radius-xs);
-  padding: 16px 18px;
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--text-muted);
-  border-left: 3px solid var(--accent);
-  position: relative;
-}
-
-.reasoning-box strong {
-  color: var(--text);
-  display: block; font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
-  font-weight: 700;
-}
-
-/* ============================================
-   TRANSCRIPT PANEL
-   ============================================ */
-.results-layout {
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  gap: 0;
-  margin: -32px -40px;
-  min-height: 100vh;
-}
-
-.results-main {
-  padding: 32px 40px;
-  overflow-y: auto;
-  max-height: 100vh;
-}
-
-.transcript-panel {
-  border-left: 1px solid var(--border);
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  max-height: 100vh;
-  position: sticky;
-  top: 0;
-}
-
-.transcript-header {
-  padding: 18px 24px;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 700;
-  flex-shrink: 0;
-  letter-spacing: -0.01em;
-  background: #f9fafb;
-}
-
-.transcript-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 18px 26px;
-}
-
-.utterance {
-  margin-bottom: 18px;
-  animation: utteranceFade 0.4s ease both;
-}
-
-@keyframes utteranceFade {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.utterance-header {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 5px;
-}
-
-.speaker-tag {
-  font-size: 10px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; padding: 2px 9px; border-radius: 4px;
-}
-
-.speaker-tag.agent {
-  background: var(--accent-glow);
-  color: var(--accent-dark);
-  border: 1px solid rgba(37,211,102,0.2);
-}
-.speaker-tag.customer {
-  background: #f3f4f6;
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-}
-
+.reasoning-box { background: #f9fafb; border-radius: var(--radius-xs); padding: 16px 18px; font-size: 13px; line-height: 1.7; color: var(--text-muted); border-left: 3px solid var(--accent); }
+.reasoning-box strong { color: var(--text); display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; font-weight: 700; }
+.results-layout { display: grid; grid-template-columns: 1fr 400px; gap: 0; margin: -32px -40px; min-height: 100vh; }
+.results-main { padding: 32px 40px; overflow-y: auto; max-height: 100vh; }
+.transcript-panel { border-left: 1px solid var(--border); background: #ffffff; display: flex; flex-direction: column; max-height: 100vh; position: sticky; top: 0; }
+.transcript-header { padding: 18px 24px; border-bottom: 1px solid var(--border); font-family: var(--font-display); font-size: 16px; font-weight: 700; flex-shrink: 0; background: #f9fafb; }
+.transcript-body { flex: 1; overflow-y: auto; padding: 18px 26px; }
+.utterance { margin-bottom: 18px; animation: utteranceFade 0.4s ease both; }
+@keyframes utteranceFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.utterance-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.speaker-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 9px; border-radius: 4px; }
+.speaker-tag.agent { background: var(--accent-glow); color: var(--accent-dark); border: 1px solid rgba(37,211,102,0.2); }
+.speaker-tag.customer { background: #f3f4f6; color: var(--text-muted); border: 1px solid var(--border); }
 .utterance-time { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-dim); }
-
-.utterance-text {
-  font-size: 13px; line-height: 1.65; color: var(--text-muted); padding-left: 4px;
-}
-
-.utterance.highlighted .utterance-text {
-  color: var(--text);
-  background: rgba(37,211,102,0.06);
-  padding: 6px 10px;
-  border-radius: var(--radius-xs);
-  border-left: 2px solid var(--accent);
-}
-
-/* ============================================
-   GRADING OVERLAY
-   ============================================ */
-.grading-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 200;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.3s;
-}
+.utterance-text { font-size: 13px; line-height: 1.65; color: var(--text-muted); padding-left: 4px; }
+.utterance.highlighted .utterance-text { color: var(--text); background: rgba(37,211,102,0.06); padding: 6px 10px; border-radius: var(--radius-xs); border-left: 2px solid var(--accent); }
+.grading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
 .grading-overlay.active { opacity: 1; pointer-events: all; }
-
-.grading-modal {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 40px;
-  text-align: center;
-  max-width: 440px;
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  overflow: hidden;
-}
-
-.grading-spinner {
-  width: 48px; height: 48px;
-  border: 3px solid #e5e7eb;
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 24px;
-}
-
+.grading-modal { background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 40px; text-align: center; max-width: 440px; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+.grading-spinner { width: 48px; height: 48px; border: 3px solid #e5e7eb; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 24px; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-.grading-modal h2 {
-  font-family: var(--font-display);
-  font-size: 20px; margin-bottom: 6px;
-  font-weight: 700;
-  color: var(--text);
-}
-
+.grading-modal h2 { font-family: var(--font-display); font-size: 20px; margin-bottom: 6px; font-weight: 700; }
 .grading-modal p { color: var(--text-muted); font-size: 13.5px; }
-
 .grading-steps { margin-top: 28px; text-align: left; }
-
-.grading-step {
-  display: flex; align-items: center; gap: 12px;
-  padding: 9px 0; font-size: 13px; color: var(--text-dim);
-  transition: all 0.3s;
-  font-weight: 400;
-}
+.grading-step { display: flex; align-items: center; gap: 12px; padding: 9px 0; font-size: 13px; color: var(--text-dim); transition: all 0.3s; }
 .grading-step.active { color: var(--accent-dark); font-weight: 600; }
 .grading-step.done { color: var(--green); }
-
-.grading-step-icon {
-  width: 22px; height: 22px; border-radius: 50%;
-  border: 2px solid currentColor;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; flex-shrink: 0;
-  transition: all 0.3s;
-}
-
-.grading-step.active .grading-step-icon {
-  background: var(--accent-glow);
-}
-
-.grading-step.done .grading-step-icon::after {
-  content: '\2713';
-  font-size: 11px;
-}
-
-/* ============================================
-   EMPTY STATE
-   ============================================ */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 42vh;
-  text-align: center;
-}
-
-.empty-state-icon {
-  width: 64px; height: 64px;
-  border-radius: 16px;
-  background: var(--accent-glow);
-  border: 1px solid rgba(37,211,102,0.15);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; margin-bottom: 20px;
-}
-
-.empty-state h2 {
-  font-family: var(--font-display);
-  font-size: 20px; margin-bottom: 8px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.empty-state p {
-  color: var(--text-dim); font-size: 14px;
-  max-width: 420px; margin-bottom: 24px;
-  line-height: 1.6;
-}
-
-/* ============================================
-   TOAST
-   ============================================ */
-.toast {
-  position: fixed;
-  bottom: 28px; right: 28px;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 20px;
-  font-size: 13.5px;
-  z-index: 300;
-  opacity: 0;
-  transform: translateY(12px) scale(0.96);
-  transition: all 0.3s ease;
-  pointer-events: none;
-  box-shadow: var(--shadow-lg);
-  font-weight: 500;
-  color: var(--text);
-}
-
+.grading-step-icon { width: 22px; height: 22px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+.grading-step.active .grading-step-icon { background: var(--accent-glow); }
+.grading-step.done .grading-step-icon::after { content: '\2713'; font-size: 11px; }
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 42vh; text-align: center; }
+.empty-state-icon { width: 64px; height: 64px; border-radius: 16px; background: var(--accent-glow); border: 1px solid rgba(37,211,102,0.15); display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; }
+.empty-state h2 { font-family: var(--font-display); font-size: 20px; margin-bottom: 8px; font-weight: 700; }
+.empty-state p { color: var(--text-dim); font-size: 14px; max-width: 420px; margin-bottom: 24px; line-height: 1.6; }
+.toast { position: fixed; bottom: 28px; right: 28px; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 20px; font-size: 13.5px; z-index: 300; opacity: 0; transform: translateY(12px) scale(0.96); transition: all 0.3s ease; pointer-events: none; box-shadow: var(--shadow-lg); font-weight: 500; }
 .toast.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
 .toast.success { border-color: rgba(34,197,94,0.4); }
-.toast.success::before {
-  content: '\2713  ';
-  color: var(--green);
-  font-weight: 700;
-}
+.toast.success::before { content: '\2713  '; color: var(--green); font-weight: 700; }
 .toast.error { border-color: rgba(239,68,68,0.4); color: #dc2626; }
-.toast.error::before {
-  content: '\2717  ';
-  font-weight: 700;
-}
-
-/* ============================================
-   SCORECARD BUILDER
-   ============================================ */
-.scorecard-form-selector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.form-chip {
-  padding: 8px 16px;
-  border-radius: 100px;
-  border: 1px solid var(--border);
-  background: #ffffff;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  font-weight: 400;
-}
-
-.form-chip:hover { border-color: var(--border-light); background: #f9fafb; }
-.form-chip.selected {
-  background: var(--accent-glow-strong);
-  border-color: var(--accent);
-  color: var(--accent-dark);
-  font-weight: 600;
-}
-
-.mapping-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.mapping-table th {
-  text-align: left;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  background: #f9fafb;
-}
-
-.mapping-table td {
-  padding: 12px 16px;
-  font-size: 13px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.mapping-table input {
-  width: 60px;
-  padding: 5px 8px;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-align: center;
-  transition: all 0.2s;
-}
-
-.mapping-table input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-glow);
-}
-
-/* ============================================
-   SCROLLBAR
-   ============================================ */
+.toast.error::before { content: '\2717  '; font-weight: 700; }
+.mapping-table { width: 100%; border-collapse: collapse; }
+.mapping-table th { text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 12px 16px; border-bottom: 1px solid var(--border); background: #f9fafb; }
+.mapping-table td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+.mapping-table input { width: 60px; padding: 5px 8px; background: #ffffff; border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: var(--font-mono); font-size: 12px; text-align: center; }
+.mapping-table input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+.import-dropzone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; }
+.import-dropzone:hover { border-color: var(--accent); background: var(--accent-glow); }
+.import-dropzone.dragover { border-color: var(--accent); background: var(--accent-glow-strong); }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-
-/* ============================================
-   ANIMATIONS
-   ============================================ */
-.fade-in { animation: fadeIn 0.5s ease both; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
 @media (max-width: 960px) {
   .shell { grid-template-columns: 1fr; }
   .sidebar { display: none; }
@@ -1118,7 +249,6 @@ body {
 <body>
 
 <div class="shell">
-  <!-- Sidebar -->
   <div class="sidebar">
     <div class="sidebar-brand">
       <div class="sidebar-logo">QA</div>
@@ -1130,9 +260,6 @@ body {
         <span class="nav-icon">&#9632;</span> Dashboard
       </div>
       <div class="nav-section-label">Build</div>
-      <div class="nav-item" data-view="forms" onclick="navigate('forms')">
-        <span class="nav-icon">&#9997;</span> Evaluation Forms
-      </div>
       <div class="nav-item" data-view="scorecards" onclick="navigate('scorecards')">
         <span class="nav-icon">&#9733;</span> Scorecards
       </div>
@@ -1146,12 +273,9 @@ body {
       <span id="statusText">Checking...</span>
     </div>
   </div>
-
-  <!-- Content -->
   <div class="content" id="content"></div>
 </div>
 
-<!-- Grading Overlay -->
 <div class="grading-overlay" id="gradingOverlay">
   <div class="grading-modal">
     <div class="grading-spinner"></div>
@@ -1166,23 +290,19 @@ body {
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 const API = '';
 
-// --- State ---
 let templates = [];
-let forms = [];
 let scorecards = [];
 let results = [];
 let currentView = 'dashboard';
 
-// --- Init ---
 async function init() {
   checkHealth();
-  await Promise.all([loadTemplates(), loadForms(), loadScorecards(), loadResults()]);
+  await Promise.all([loadTemplates(), loadScorecards(), loadResults()]);
   navigate('dashboard');
 }
 
@@ -1192,34 +312,14 @@ async function checkHealth() {
     const data = await res.json();
     const dot = document.getElementById('statusDot');
     const text = document.getElementById('statusText');
-    if (data.api_key_configured) {
-      dot.className = 'status-dot connected';
-      text.textContent = 'Connected';
-    } else {
-      dot.className = 'status-dot error';
-      text.textContent = 'No API key';
-    }
-  } catch (e) {
-    document.getElementById('statusDot').className = 'status-dot error';
-    document.getElementById('statusText').textContent = 'Offline';
-  }
+    if (data.api_key_configured) { dot.className = 'status-dot connected'; text.textContent = 'Connected'; }
+    else { dot.className = 'status-dot error'; text.textContent = 'No API key'; }
+  } catch (e) { document.getElementById('statusDot').className = 'status-dot error'; document.getElementById('statusText').textContent = 'Offline'; }
 }
 
-async function loadTemplates() {
-  try { templates = await (await fetch(`${API}/api/templates`)).json(); } catch(e) { templates = []; }
-}
-
-async function loadForms() {
-  try { forms = await (await fetch(`${API}/api/forms`)).json(); } catch(e) { forms = []; }
-}
-
-async function loadScorecards() {
-  try { scorecards = await (await fetch(`${API}/api/scorecards`)).json(); } catch(e) { scorecards = []; }
-}
-
-async function loadResults() {
-  try { results = await (await fetch(`${API}/api/results`)).json(); } catch(e) { results = []; }
-}
+async function loadTemplates() { try { templates = await (await fetch(`${API}/api/templates`)).json(); } catch(e) { templates = []; } }
+async function loadScorecards() { try { scorecards = await (await fetch(`${API}/api/scorecards`)).json(); } catch(e) { scorecards = []; } }
+async function loadResults() { try { results = await (await fetch(`${API}/api/results`)).json(); } catch(e) { results = []; } }
 
 function showToast(msg, type = 'success') {
   const el = document.getElementById('toast');
@@ -1228,16 +328,12 @@ function showToast(msg, type = 'success') {
   setTimeout(() => el.className = 'toast', 3000);
 }
 
-// --- Navigation ---
 function navigate(view, data) {
   currentView = view;
   document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === view));
-
   const content = document.getElementById('content');
   switch (view) {
     case 'dashboard': renderDashboard(content); break;
-    case 'forms': renderFormsListView(content); break;
-    case 'form-builder': renderFormBuilder(content, data); break;
     case 'scorecards': renderScorecardsListView(content); break;
     case 'scorecard-builder': renderScorecardBuilder(content, data); break;
     case 'grade': renderGradeView(content); break;
@@ -1250,97 +346,24 @@ function navigate(view, data) {
 //  DASHBOARD VIEW
 // ============================================================
 function renderDashboard(el) {
-  let html = `
-    <div class="page-header">
-      <h1>Dashboard</h1>
-      <p>Overview of all graded transcripts</p>
-    </div>
-  `;
-
+  let html = `<div class="page-header"><h1>Dashboard</h1><p>Overview of all graded transcripts</p></div>`;
   if (results.length === 0) {
-    html += `
-      <div class="empty-state">
-        <div class="empty-state-icon">&#9632;</div>
-        <h2>No grading results yet</h2>
-        <p>Create an evaluation form and scorecard, then grade a transcript to see results here.</p>
-        <button class="btn btn-primary" onclick="navigate('grade')">Grade a Transcript</button>
-      </div>
-    `;
-    el.innerHTML = html;
-    return;
+    html += `<div class="empty-state"><div class="empty-state-icon">&#9632;</div><h2>No grading results yet</h2><p>Create a scorecard, then grade a transcript to see results here.</p><button class="btn btn-primary" onclick="navigate('grade')">Grade a Transcript</button></div>`;
+    el.innerHTML = html; return;
   }
-
-  // Stats
-  const avgScore = results.reduce((s, r) => s + r.final_score, 0) / results.length;
-  const critCount = results.filter(r => r.critical_fail_triggered).length;
-
-  html += `
-    <div class="score-cards">
-      <div class="score-card primary">
-        <div class="score-card-label">Total Graded</div>
-        <div class="score-card-value">${results.length}</div>
-        <div class="score-card-sub">transcripts</div>
-      </div>
-      <div class="score-card green">
-        <div class="score-card-label">Avg Score</div>
-        <div class="score-card-value">${avgScore.toFixed(1)}%</div>
-        <div class="score-card-sub">across all calls</div>
-      </div>
-      <div class="score-card ${critCount > 0 ? 'red' : 'blue'}">
-        <div class="score-card-label">Critical Fails</div>
-        <div class="score-card-value">${critCount}</div>
-        <div class="score-card-sub">${critCount > 0 ? 'need review' : 'all clear'}</div>
-      </div>
-      <div class="score-card blue">
-        <div class="score-card-label">Scorecards</div>
-        <div class="score-card-value">${scorecards.length}</div>
-        <div class="score-card-sub">configured</div>
-      </div>
-    </div>
-
-    <div class="card" style="padding:0; overflow:hidden;">
-      <table class="dashboard-table">
-        <thead>
-          <tr>
-            <th>Agent</th>
-            <th>Call ID</th>
-            <th>Scorecard</th>
-            <th>Score</th>
-            <th>Questions</th>
-            <th>Critical</th>
-            <th>Graded</th>
-          </tr>
-        </thead>
-        <tbody>
-  `;
-
+  html += `<div class="card" style="padding:0;overflow:hidden"><table class="dashboard-table"><thead><tr><th>Agent</th><th>Call ID</th><th>Scorecard</th><th>Score</th><th>Questions</th><th>Critical</th><th>Graded</th></tr></thead><tbody>`;
   results.slice().reverse().forEach(r => {
     const scoreClass = r.final_score >= 80 ? 'high' : r.final_score >= 60 ? 'mid' : 'low';
     const date = r.graded_at ? new Date(r.graded_at).toLocaleDateString() : '';
-    html += `
-      <tr onclick="viewResult('${r.result_id}')">
-        <td><strong>${r.agent_name || 'Unknown'}</strong></td>
-        <td style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted)">${r.call_id}</td>
-        <td>${r.scorecard_name}</td>
-        <td><span class="score-pill ${scoreClass}">${r.final_score}%</span></td>
-        <td>${r.questions_graded}/${r.questions_count}</td>
-        <td>${r.critical_fail_triggered ? '<span class="badge badge-critical">FAIL</span>' : '<span style="color:var(--green)">&#8212;</span>'}</td>
-        <td style="color:var(--text-muted)">${date}</td>
-      </tr>
-    `;
+    html += `<tr onclick="viewResult('${r.result_id}')"><td><strong>${r.agent_name || 'Unknown'}</strong></td><td style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted)">${r.call_id}</td><td>${r.scorecard_name}</td><td><span class="score-pill ${scoreClass}">${r.final_score}%</span></td><td>${r.questions_graded}/${r.questions_count}</td><td>${r.critical_fail_triggered ? '<span class="badge badge-critical">FAIL</span>' : '<span style="color:var(--green)">&#8212;</span>'}</td><td style="color:var(--text-muted)">${date}</td></tr>`;
   });
-
   html += `</tbody></table></div>`;
   el.innerHTML = html;
 }
 
 async function viewResult(resultId) {
-  try {
-    const result = await (await fetch(`${API}/api/results/${resultId}`)).json();
-    navigate('result-detail', result);
-  } catch(e) {
-    showToast('Failed to load result', 'error');
-  }
+  try { const result = await (await fetch(`${API}/api/results/${resultId}`)).json(); navigate('result-detail', result); }
+  catch(e) { showToast('Failed to load result', 'error'); }
 }
 
 // ============================================================
@@ -1350,666 +373,74 @@ function renderResultDetail(el, data) {
   const meta = data.transcript_data?.call_metadata || {};
   const mins = Math.floor((meta.duration_seconds || 0) / 60);
   const secs = (meta.duration_seconds || 0) % 60;
-
   const scored = data.question_results.filter(q => q.answer !== 'N/A');
   const naCount = data.question_results.length - scored.length;
-  const avgConf = scored.length > 0
-    ? Math.round(scored.reduce((s, q) => s + q.confidence, 0) / scored.length)
-    : 0;
+  const avgConf = scored.length > 0 ? Math.round(scored.reduce((s, q) => s + q.confidence, 0) / scored.length) : 0;
 
-  let mainHtml = `
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:28px">
-      <button class="btn btn-ghost" onclick="navigate('dashboard')">&larr; Back</button>
-      <div>
-        <h1 style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text)">${data.scorecard_name}</h1>
-        <div style="display:flex;gap:18px;font-size:13px;color:var(--text-muted);margin-top:2px">
-          <span>Agent: <strong>${meta.agent_name || 'Unknown'}</strong></span>
-          <span>Call: <strong style="font-family:var(--font-mono);font-size:11.5px">${meta.call_id || ''}</strong></span>
-          <span>Duration: <strong>${mins}m ${secs}s</strong></span>
-        </div>
-      </div>
-    </div>
-  `;
+  let mainHtml = `<div style="display:flex;align-items:center;gap:14px;margin-bottom:28px"><button class="btn btn-ghost" onclick="navigate('dashboard')">&larr; Back</button><div><h1 style="font-family:var(--font-display);font-size:22px;font-weight:700">${data.scorecard_name}</h1><div style="display:flex;gap:18px;font-size:13px;color:var(--text-muted);margin-top:2px"><span>Agent: <strong>${meta.agent_name || 'Unknown'}</strong></span><span>Call: <strong style="font-family:var(--font-mono);font-size:11.5px">${meta.call_id || ''}</strong></span><span>Duration: <strong>${mins}m ${secs}s</strong></span></div></div></div>`;
 
   if (data.critical_fail_triggered) {
-    const behavior = data.critical_fail_behavior === 'zero' ? 'Score zeroed' : 'Flagged for review';
-    mainHtml += `
-      <div class="critical-banner">
-        <div class="critical-banner-icon">!</div>
-        <div><strong>Critical Fail Triggered</strong> &mdash; ${behavior}. Questions: ${data.critical_fail_questions.join(', ')}</div>
-      </div>
-    `;
+    const critDetails = (data.question_results || []).filter(qr => qr.critical_fail_flag && (qr.answer === 'No' || qr.answer === '0'));
+    const scorecardLevel = critDetails.filter(qr => (qr.critical_fail_level || 'zero_scorecard') === 'zero_scorecard');
+    const sectionLevel = critDetails.filter(qr => qr.critical_fail_level === 'zero_section');
+    if (scorecardLevel.length > 0) mainHtml += `<div class="critical-banner"><div class="critical-banner-icon">!</div><div><strong>Critical Fail &mdash; Entire Scorecard Zeroed</strong><br>Questions: ${scorecardLevel.map(q => q.question_text).join(', ')}</div></div>`;
+    if (sectionLevel.length > 0) { const sn = [...new Set(sectionLevel.map(q => q.section || 'General'))]; mainHtml += `<div class="critical-banner" style="background:#fffbeb;border-color:#fde68a"><div class="critical-banner-icon" style="background:#f59e0b">!</div><div><strong>Critical Fail &mdash; Section(s) Zeroed: ${sn.join(', ')}</strong><br>Questions: ${sectionLevel.map(q => q.question_text).join(', ')}</div></div>`; }
   }
 
-  mainHtml += `
-    <div class="score-cards">
-      <div class="score-card primary">
-        <div class="score-card-label">Final Score</div>
-        <div class="score-card-value">${data.final_score}%</div>
-      </div>
-      <div class="score-card green">
-        <div class="score-card-label">Graded</div>
-        <div class="score-card-value">${scored.length}<span style="font-size:16px;color:var(--text-dim)">/${data.question_results.length}</span></div>
-        <div class="score-card-sub">${naCount} N/A</div>
-      </div>
-      <div class="score-card ${data.critical_fail_triggered ? 'red' : 'blue'}">
-        <div class="score-card-label">Critical Fails</div>
-        <div class="score-card-value">${data.critical_fail_questions.length}</div>
-      </div>
-      <div class="score-card blue">
-        <div class="score-card-label">Avg Confidence</div>
-        <div class="score-card-value">${avgConf}%</div>
-      </div>
-    </div>
-  `;
+  mainHtml += `<div class="score-cards"><div class="score-card primary"><div class="score-card-label">Final Score</div><div class="score-card-value">${data.final_score}%</div></div><div class="score-card green"><div class="score-card-label">Graded</div><div class="score-card-value">${scored.length}<span style="font-size:16px;color:var(--text-dim)">/${data.question_results.length}</span></div><div class="score-card-sub">${naCount} N/A</div></div><div class="score-card ${data.critical_fail_triggered ? 'red' : 'blue'}"><div class="score-card-label">Critical Fails</div><div class="score-card-value">${data.critical_fail_questions.length}</div></div><div class="score-card blue"><div class="score-card-label">Avg Confidence</div><div class="score-card-value">${avgConf}%</div></div></div>`;
 
-  // Form sub-scores
-  if (data.form_scores && data.form_scores.length > 0) {
-    mainHtml += `<h2 style="font-family:var(--font-display);font-size:16px;margin-bottom:14px;font-weight:700">Form Scores</h2>`;
-    data.form_scores.forEach(fs => {
-      mainHtml += `
-        <div class="form-score-bar">
-          <div class="form-score-header">
-            <span class="form-score-name">${fs.form_name}</span>
-            <span class="form-score-pct">${fs.points_earned}/${fs.points_possible} (${fs.percentage}%)</span>
-          </div>
-          <div class="form-score-track">
-            <div class="form-score-fill" style="width:0%" data-width="${fs.percentage}%"></div>
-          </div>
-        </div>
-      `;
+  if (data.section_scores && data.section_scores.length > 0) {
+    mainHtml += `<h2 style="font-family:var(--font-display);font-size:16px;margin-bottom:14px;font-weight:700">Section Scores</h2>`;
+    data.section_scores.forEach(ss => {
+      const critInd = ss.critical_fail_triggered ? ' <span class="badge badge-critical" style="margin-left:8px">ZEROED</span>' : '';
+      const fillColor = ss.critical_fail_triggered ? 'var(--red)' : 'var(--accent)';
+      mainHtml += `<div class="form-score-bar"><div class="form-score-header"><span class="form-score-name">${escapeHtml(ss.section_name)}${critInd}</span><span class="form-score-pct">${ss.points_earned}/${ss.points_possible} (${ss.percentage}%)</span></div><div class="form-score-track"><div class="form-score-fill" style="width:0%;background:${fillColor}" data-width="${ss.percentage || 0}%"></div></div></div>`;
     });
   }
 
-  // Question breakdown by section
   const sections = {};
-  data.question_results.forEach(qr => {
-    const sec = qr.section || 'General';
-    if (!sections[sec]) sections[sec] = [];
-    sections[sec].push(qr);
-  });
-
+  data.question_results.forEach(qr => { const sec = qr.section || 'General'; if (!sections[sec]) sections[sec] = []; sections[sec].push(qr); });
   mainHtml += `<h2 style="font-family:var(--font-display);font-size:16px;margin:28px 0 14px;font-weight:700">Question Breakdown</h2>`;
-
   Object.entries(sections).forEach(([secName, questions]) => {
-    mainHtml += `
-      <div class="section-group">
-        <div class="section-group-header">
-          <h3>${secName}</h3>
-          <span class="section-badge">${questions.length} questions</span>
-        </div>
-    `;
-
+    mainHtml += `<div class="section-group"><div class="section-group-header"><h3>${secName}</h3><span class="section-badge">${questions.length} questions</span></div>`;
     questions.forEach(qr => {
       const answerBadge = getAnswerBadge(qr);
       const confClass = qr.confidence >= 70 ? 'high' : qr.confidence >= 50 ? 'mid' : 'low';
       const isCritFailed = qr.critical_fail_flag && (qr.answer === 'No' || qr.answer === '0');
       const scoreText = qr.answer !== 'N/A' ? `${qr.points_earned}/${qr.points_possible}` : 'N/A';
-
-      mainHtml += `
-        <div class="question-row ${isCritFailed ? 'critical-failed' : ''}" onclick="this.classList.toggle('expanded')">
-          <div class="question-row-main">
-            <div class="question-text">${qr.question_text}</div>
-            <div class="question-badges">
-              ${qr.critical_fail_flag ? '<span class="badge badge-critical">CRITICAL</span>' : ''}
-              ${answerBadge}
-              <span class="badge badge-score">${scoreText}</span>
-              <span class="badge-confidence ${confClass}">${qr.confidence}%</span>
-              <span class="badge-method">${formatMethod(qr.method)}</span>
-            </div>
-          </div>
-          <div class="question-detail">
-            <div class="detail-grid">
-              <div class="detail-item">
-                <label>Decision Stage</label>
-                <span>Stage ${qr.decision_stage} &mdash; ${stageLabel(qr.decision_stage)}</span>
-              </div>
-              <div class="detail-item">
-                <label>Evidence</label>
-                <span>${qr.transcript_evidence || 'None'}</span>
-              </div>
-            </div>
-            <div class="reasoning-box">
-              <strong>AI Reasoning</strong>
-              ${qr.reasoning}
-            </div>
-          </div>
-        </div>
-      `;
+      mainHtml += `<div class="question-row ${isCritFailed ? 'critical-failed' : ''}" onclick="this.classList.toggle('expanded')"><div class="question-row-main"><div class="question-text">${qr.question_text}</div><div class="question-badges">${qr.critical_fail_flag ? '<span class="badge badge-critical">' + ((qr.critical_fail_level === 'zero_section') ? 'CRITICAL (SECTION)' : 'CRITICAL (SCORECARD)') + '</span>' : ''}${answerBadge}<span class="badge badge-score">${scoreText}</span><span class="badge-confidence ${confClass}">${qr.confidence}%</span><span class="badge-method">${formatMethod(qr.method)}</span></div></div><div class="question-detail"><div class="detail-grid"><div class="detail-item"><label>Decision Stage</label><span>Stage ${qr.decision_stage} &mdash; ${stageLabel(qr.decision_stage)}</span></div><div class="detail-item"><label>Evidence</label><span>${qr.transcript_evidence || 'None'}</span></div></div><div class="reasoning-box"><strong>AI Reasoning</strong>${qr.reasoning}</div></div></div>`;
     });
-
     mainHtml += `</div>`;
   });
 
-  // Build transcript panel HTML
   let transcriptHtml = '';
   if (data.transcript_data && data.transcript_data.transcript) {
     const evidenceTimestamps = new Set();
-    data.question_results.forEach(qr => {
-      if (qr.transcript_evidence) {
-        qr.transcript_evidence.split(',').forEach(t => {
-          evidenceTimestamps.add(t.trim().split(' - ')[0].trim().split(' ')[0]);
-        });
-      }
-    });
-
+    data.question_results.forEach(qr => { if (qr.transcript_evidence) qr.transcript_evidence.split(',').forEach(t => evidenceTimestamps.add(t.trim().split(' - ')[0].trim().split(' ')[0])); });
     data.transcript_data.transcript.forEach((u, i) => {
       const isHighlighted = evidenceTimestamps.has(u.timestamp);
-      transcriptHtml += `
-        <div class="utterance ${isHighlighted ? 'highlighted' : ''}" style="animation-delay:${i * 0.03}s">
-          <div class="utterance-header">
-            <span class="speaker-tag ${u.speaker}">${u.speaker}</span>
-            <span class="utterance-time">${u.timestamp}</span>
-          </div>
-          <div class="utterance-text">${escapeHtml(u.text)}</div>
-        </div>
-      `;
+      transcriptHtml += `<div class="utterance ${isHighlighted ? 'highlighted' : ''}" style="animation-delay:${i * 0.03}s"><div class="utterance-header"><span class="speaker-tag ${u.speaker}">${u.speaker}</span><span class="utterance-time">${u.timestamp}</span></div><div class="utterance-text">${escapeHtml(u.text)}</div></div>`;
     });
   }
 
-  el.innerHTML = `
-    <div class="results-layout">
-      <div class="results-main">${mainHtml}</div>
-      <div class="transcript-panel">
-        <div class="transcript-header">Transcript</div>
-        <div class="transcript-body">${transcriptHtml}</div>
-      </div>
-    </div>
-  `;
-
-  // Animate fill bars
-  requestAnimationFrame(() => {
-    el.querySelectorAll('.form-score-fill').forEach(bar => {
-      bar.style.width = bar.dataset.width;
-    });
-  });
-}
-
-// ============================================================
-//  FORMS LIST VIEW
-// ============================================================
-function renderFormsListView(el) {
-  let html = `
-    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
-      <div>
-        <h1>Evaluation Forms</h1>
-        <p>Create and manage evaluation forms with questions</p>
-      </div>
-      <button class="btn btn-primary" onclick="navigate('form-builder')">+ New Form</button>
-    </div>
-  `;
-
-  if (forms.length === 0) {
-    html += `
-      <div class="empty-state">
-        <div class="empty-state-icon">&#9997;</div>
-        <h2>No forms yet</h2>
-        <p>Create your first evaluation form to define the questions used to grade call transcripts.</p>
-        <button class="btn btn-primary" onclick="navigate('form-builder')">Create Form</button>
-      </div>
-    `;
-  } else {
-    forms.forEach(form => {
-      const qCount = form.sections.reduce((c, s) => c + s.questions.length, 0);
-      html += `
-        <div class="card" style="cursor:pointer" onclick="navigate('form-builder', ${JSON.stringify(form).replace(/"/g, '&quot;')})">
-          <div class="card-header">
-            <h3>${escapeHtml(form.name)}</h3>
-            <div class="btn-group">
-              <span class="badge badge-score">${form.form_id}</span>
-              <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteForm('${form.form_id}')">Delete</button>
-            </div>
-          </div>
-          <div style="display:flex;gap:18px;font-size:13px;color:var(--text-muted)">
-            <span>${form.sections.length} sections</span>
-            <span>${qCount} questions</span>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  el.innerHTML = html;
-}
-
-async function deleteForm(formId) {
-  if (!confirm('Delete this form?')) return;
-  await fetch(`${API}/api/forms/${formId}`, { method: 'DELETE' });
-  await loadForms();
-  navigate('forms');
-  showToast('Form deleted');
-}
-
-// ============================================================
-//  FORM BUILDER VIEW
-// ============================================================
-function renderFormBuilder(el, existingForm) {
-  const isEdit = !!existingForm;
-  const form = existingForm || { form_id: '', name: '', sections: [] };
-
-  let html = `
-    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
-      <div>
-        <h1>${isEdit ? 'Edit Form' : 'New Evaluation Form'}</h1>
-        <p>${isEdit ? 'Modify your form questions and settings' : 'Build a form from scratch or pull in template questions'}</p>
-      </div>
-      <div class="btn-group">
-        <button class="btn btn-secondary" onclick="navigate('forms')">&larr; Back</button>
-        <button class="btn btn-primary" id="btnSaveForm">Save Form</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="form-group">
-        <label>Form Name</label>
-        <input class="form-input" id="formName" value="${escapeHtml(form.name)}" placeholder="e.g., Support Calls - Template B">
-      </div>
-      <div class="form-group">
-        <label>Form ID (auto-generated if empty)</label>
-        <input class="form-input" id="formId" value="${escapeHtml(form.form_id)}" placeholder="form_support_v1" ${isEdit ? 'readonly style="opacity:0.5"' : ''}>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px">
-      <!-- Template Questions -->
-      <div>
-        <h2 style="font-family:var(--font-display);font-size:16px;margin-bottom:10px;font-weight:700">Template Questions</h2>
-        <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px">Select questions to add to your form</p>
-        <div class="template-picker" id="templatePicker"></div>
-        <button class="btn btn-secondary" id="btnAddSelected" style="width:100%">Add Selected to Form &rarr;</button>
-      </div>
-
-      <!-- Form Sections & Questions -->
-      <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <h2 style="font-family:var(--font-display);font-size:16px;font-weight:700">Form Sections</h2>
-          <button class="btn btn-secondary btn-sm" id="btnAddSection">+ Add Section</button>
-        </div>
-        <div id="formSections"></div>
-      </div>
-    </div>
-  `;
-
-  el.innerHTML = html;
-
-  // Render template picker
-  renderTemplatePicker();
-
-  // Render existing sections
-  window._formSections = JSON.parse(JSON.stringify(form.sections || []));
-  renderFormSections();
-
-  // Bind events
-  document.getElementById('btnAddSelected').onclick = addSelectedTemplatesToForm;
-  document.getElementById('btnAddSection').onclick = () => {
-    window._formSections.push({ name: '', description: '', questions: [] });
-    renderFormSections();
-  };
-  document.getElementById('btnSaveForm').onclick = saveCurrentForm;
-}
-
-function renderTemplatePicker() {
-  const picker = document.getElementById('templatePicker');
-  let html = '';
-  templates.forEach((cat, ci) => {
-    html += `
-      <div class="template-category" data-cat="${ci}">
-        <div class="template-category-header" onclick="this.parentElement.classList.toggle('open')">
-          <span>${cat.category}</span>
-          <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono)">${cat.questions.length}</span>
-        </div>
-        <div class="template-category-body">
-    `;
-    cat.questions.forEach((q, qi) => {
-      const typeLabel = q.answer_type === 'binary' ? 'Binary' : 'Likert 0-2';
-      const typeBadge = q.answer_type === 'binary' ? 'badge-binary' : 'badge-likert';
-      html += `
-        <div class="template-question-item" onclick="toggleTemplateSelect(this, event)">
-          <input type="checkbox" data-cat="${ci}" data-q="${qi}" onclick="event.stopPropagation(); this.closest('.template-question-item').classList.toggle('selected', this.checked)">
-          <div>
-            <div>${q.question_text}</div>
-            <div class="template-question-meta">
-              <span class="badge ${typeBadge}">${typeLabel}</span>
-              ${q.critical_fail ? '<span class="badge badge-critical">CRITICAL</span>' : ''}
-              <span class="badge badge-method">${q.matching_method}</span>
-            </div>
-          </div>
-        </div>
-      `;
-    });
-    html += `</div></div>`;
-  });
-  picker.innerHTML = html;
-}
-
-function toggleTemplateSelect(item, event) {
-  const cb = item.querySelector('input[type="checkbox"]');
-  cb.checked = !cb.checked;
-  item.classList.toggle('selected', cb.checked);
-}
-
-function addSelectedTemplatesToForm() {
-  const checked = document.querySelectorAll('#templatePicker input[type="checkbox"]:checked');
-  if (checked.length === 0) { showToast('No questions selected', 'error'); return; }
-
-  const byCategory = {};
-  checked.forEach(cb => {
-    const ci = parseInt(cb.dataset.cat);
-    const qi = parseInt(cb.dataset.q);
-    const cat = templates[ci];
-    if (!byCategory[cat.category]) byCategory[cat.category] = [];
-    byCategory[cat.category].push(JSON.parse(JSON.stringify(cat.questions[qi])));
-    cb.checked = false;
-    cb.closest('.template-question-item').classList.remove('selected');
-  });
-
-  Object.entries(byCategory).forEach(([catName, questions]) => {
-    let section = window._formSections.find(s => s.name === catName);
-    if (!section) {
-      section = { name: catName, description: '', questions: [] };
-      window._formSections.push(section);
-    }
-    section.questions.push(...questions);
-  });
-
-  renderFormSections();
-  showToast(`Added ${checked.length} questions`);
-}
-
-function renderFormSections() {
-  const container = document.getElementById('formSections');
-  if (window._formSections.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state" style="min-height:20vh">
-        <p style="color:var(--text-dim);font-size:13px">No sections yet. Add from templates or create a new section.</p>
-      </div>
-    `;
-    return;
-  }
-
-  let html = '';
-  window._formSections.forEach((section, si) => {
-    html += `
-      <div class="card">
-        <div class="card-header">
-          <input class="form-input" value="${escapeHtml(section.name)}" placeholder="Section name"
-                 style="font-weight:600;background:transparent;border:none;padding:0;font-size:15px;width:auto;flex:1;box-shadow:none"
-                 onchange="window._formSections[${si}].name=this.value">
-          <div class="btn-group">
-            <button class="btn btn-ghost btn-sm" onclick="addQuestionToSection(${si})">+ Question</button>
-            <button class="btn btn-danger btn-sm" onclick="removeSection(${si})">Remove</button>
-          </div>
-        </div>
-    `;
-
-    section.questions.forEach((q, qi) => {
-      const typeLabel = q.answer_type === 'binary' ? 'Binary' : 'Likert 0-2';
-      const typeBadge = q.answer_type === 'binary' ? 'badge-binary' : 'badge-likert';
-      html += `
-        <div style="padding:12px 0;border-top:1px solid var(--border);display:flex;align-items:flex-start;gap:10px">
-          <div style="flex:1">
-            <div style="font-size:13px;margin-bottom:5px;line-height:1.5">${escapeHtml(q.question_text)}</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap">
-              <span class="badge ${typeBadge}">${typeLabel}</span>
-              ${q.critical_fail ? '<span class="badge badge-critical">CRITICAL</span>' : ''}
-              <span class="badge badge-method">${q.matching_method}</span>
-            </div>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="editQuestion(${si},${qi})" style="font-size:11px">Edit</button>
-          <button class="btn btn-ghost btn-sm" onclick="removeQuestion(${si},${qi})" style="font-size:11px;color:var(--red)">X</button>
-        </div>
-      `;
-    });
-
-    html += `</div>`;
-  });
-
-  container.innerHTML = html;
-}
-
-function removeSection(si) {
-  window._formSections.splice(si, 1);
-  renderFormSections();
-}
-
-function removeQuestion(si, qi) {
-  window._formSections[si].questions.splice(qi, 1);
-  renderFormSections();
-}
-
-function addQuestionToSection(si) {
-  window._formSections[si].questions.push({
-    question_text: '',
-    answer_type: 'binary',
-    matching_method: 'llm',
-    keywords: [],
-    answer_definitions: { Yes: '', No: '' },
-    default_answer: null,
-    na_eligible: true,
-    critical_fail: false,
-    examples: []
-  });
-  renderFormSections();
-  const qi = window._formSections[si].questions.length - 1;
-  setTimeout(() => editQuestion(si, qi), 50);
-}
-
-function editQuestion(si, qi) {
-  const q = window._formSections[si].questions[qi];
-
-  let defFields = '';
-  if (q.answer_type === 'binary') {
-    defFields = `
-      <div class="form-group">
-        <label>"Yes" Definition</label>
-        <textarea class="form-textarea" id="eq_def_yes" rows="2">${escapeHtml(q.answer_definitions?.Yes || '')}</textarea>
-      </div>
-      <div class="form-group">
-        <label>"No" Definition</label>
-        <textarea class="form-textarea" id="eq_def_no" rows="2">${escapeHtml(q.answer_definitions?.No || '')}</textarea>
-      </div>
-    `;
-  } else {
-    defFields = `
-      <div class="form-group">
-        <label>"0" Definition</label>
-        <textarea class="form-textarea" id="eq_def_0" rows="2">${escapeHtml(q.answer_definitions?.['0'] || '')}</textarea>
-      </div>
-      <div class="form-group">
-        <label>"1" Definition</label>
-        <textarea class="form-textarea" id="eq_def_1" rows="2">${escapeHtml(q.answer_definitions?.['1'] || '')}</textarea>
-      </div>
-      <div class="form-group">
-        <label>"2" Definition</label>
-        <textarea class="form-textarea" id="eq_def_2" rows="2">${escapeHtml(q.answer_definitions?.['2'] || '')}</textarea>
-      </div>
-    `;
-  }
-
-  const overlay = document.createElement('div');
-  overlay.className = 'grading-overlay active';
-  overlay.style.alignItems = 'flex-start';
-  overlay.style.paddingTop = '60px';
-  overlay.innerHTML = `
-    <div class="grading-modal" style="text-align:left;max-width:620px;width:100%;padding:36px;max-height:82vh;overflow-y:auto">
-      <h2 style="margin-bottom:24px">Edit Question</h2>
-
-      <div class="form-group">
-        <label>Question Text</label>
-        <textarea class="form-textarea" id="eq_text" rows="2">${escapeHtml(q.question_text)}</textarea>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Answer Type</label>
-          <select class="form-select" id="eq_type">
-            <option value="binary" ${q.answer_type === 'binary' ? 'selected' : ''}>Binary (Yes/No)</option>
-            <option value="likert_0_2" ${q.answer_type === 'likert_0_2' ? 'selected' : ''}>Likert (0-2)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Matching Method</label>
-          <select class="form-select" id="eq_method">
-            <option value="llm" ${q.matching_method === 'llm' ? 'selected' : ''}>LLM</option>
-            <option value="keyword" ${q.matching_method === 'keyword' ? 'selected' : ''}>Keyword</option>
-            <option value="hybrid" ${q.matching_method === 'hybrid' ? 'selected' : ''}>Hybrid</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Keywords (comma-separated, for keyword/hybrid)</label>
-        <input class="form-input" id="eq_keywords" value="${escapeHtml((q.keywords || []).join(', '))}">
-      </div>
-
-      <div id="eq_definitions">${defFields}</div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Default Answer</label>
-          <input class="form-input" id="eq_default" value="${escapeHtml(q.default_answer || '')}" placeholder="null">
-        </div>
-        <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end">
-          <label class="form-check">
-            <input type="checkbox" id="eq_na" ${q.na_eligible ? 'checked' : ''}> N/A Eligible
-          </label>
-          <label class="form-check" style="margin-top:8px">
-            <input type="checkbox" id="eq_critical" ${q.critical_fail ? 'checked' : ''}> Critical Fail
-          </label>
-        </div>
-      </div>
-
-      <div class="btn-group" style="margin-top:24px;justify-content:flex-end">
-        <button class="btn btn-secondary" id="eq_cancel">Cancel</button>
-        <button class="btn btn-primary" id="eq_save">Save Question</button>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-
-  document.getElementById('eq_type').onchange = function() {
-    const defsEl = document.getElementById('eq_definitions');
-    if (this.value === 'binary') {
-      defsEl.innerHTML = `
-        <div class="form-group"><label>"Yes" Definition</label><textarea class="form-textarea" id="eq_def_yes" rows="2"></textarea></div>
-        <div class="form-group"><label>"No" Definition</label><textarea class="form-textarea" id="eq_def_no" rows="2"></textarea></div>
-      `;
-    } else {
-      defsEl.innerHTML = `
-        <div class="form-group"><label>"0" Definition</label><textarea class="form-textarea" id="eq_def_0" rows="2"></textarea></div>
-        <div class="form-group"><label>"1" Definition</label><textarea class="form-textarea" id="eq_def_1" rows="2"></textarea></div>
-        <div class="form-group"><label>"2" Definition</label><textarea class="form-textarea" id="eq_def_2" rows="2"></textarea></div>
-      `;
-    }
-  };
-
-  document.getElementById('eq_cancel').onclick = () => overlay.remove();
-
-  document.getElementById('eq_save').onclick = () => {
-    const answerType = document.getElementById('eq_type').value;
-    let defs = {};
-    if (answerType === 'binary') {
-      defs = { Yes: document.getElementById('eq_def_yes').value, No: document.getElementById('eq_def_no').value };
-    } else {
-      defs = { '0': document.getElementById('eq_def_0').value, '1': document.getElementById('eq_def_1').value, '2': document.getElementById('eq_def_2').value };
-    }
-
-    const kw = document.getElementById('eq_keywords').value;
-
-    window._formSections[si].questions[qi] = {
-      ...q,
-      question_text: document.getElementById('eq_text').value,
-      answer_type: answerType,
-      matching_method: document.getElementById('eq_method').value,
-      keywords: kw ? kw.split(',').map(k => k.trim()).filter(Boolean) : [],
-      answer_definitions: defs,
-      default_answer: document.getElementById('eq_default').value || null,
-      na_eligible: document.getElementById('eq_na').checked,
-      critical_fail: document.getElementById('eq_critical').checked,
-      examples: q.examples || []
-    };
-
-    overlay.remove();
-    renderFormSections();
-    showToast('Question updated');
-  };
-}
-
-async function saveCurrentForm() {
-  const name = document.getElementById('formName').value.trim();
-  if (!name) { showToast('Form name is required', 'error'); return; }
-  if (window._formSections.length === 0) { showToast('Add at least one section', 'error'); return; }
-
-  const formData = {
-    form_id: document.getElementById('formId').value.trim(),
-    name: name,
-    sections: window._formSections
-  };
-
-  try {
-    const res = await fetch(`${API}/api/forms`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
-    if (!res.ok) throw new Error('Failed to save');
-    await loadForms();
-    showToast('Form saved');
-    navigate('forms');
-  } catch(e) {
-    showToast('Error saving form: ' + e.message, 'error');
-  }
+  el.innerHTML = `<div class="results-layout"><div class="results-main">${mainHtml}</div><div class="transcript-panel"><div class="transcript-header">Transcript</div><div class="transcript-body">${transcriptHtml}</div></div></div>`;
+  requestAnimationFrame(() => { el.querySelectorAll('.form-score-fill').forEach(bar => { bar.style.width = bar.dataset.width; }); });
 }
 
 // ============================================================
 //  SCORECARDS LIST VIEW
 // ============================================================
 function renderScorecardsListView(el) {
-  let html = `
-    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
-      <div>
-        <h1>Scorecards</h1>
-        <p>Create scorecards that map evaluation form questions to point values</p>
-      </div>
-      <button class="btn btn-primary" onclick="navigate('scorecard-builder')">+ New Scorecard</button>
-    </div>
-  `;
-
+  let html = `<div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between"><div><h1>Scorecards</h1><p>Create and manage scorecards with sections, questions, and scoring</p></div><button class="btn btn-primary" onclick="navigate('scorecard-builder')">+ New Scorecard</button></div>`;
   if (scorecards.length === 0) {
-    html += `
-      <div class="empty-state">
-        <div class="empty-state-icon">&#9733;</div>
-        <h2>No scorecards yet</h2>
-        <p>Create a scorecard to define how evaluation form questions are scored.</p>
-        <button class="btn btn-primary" onclick="navigate('scorecard-builder')">Create Scorecard</button>
-      </div>
-    `;
+    html += `<div class="empty-state"><div class="empty-state-icon">&#9733;</div><h2>No scorecards yet</h2><p>Create your first scorecard to define how call transcripts are evaluated and scored.</p><button class="btn btn-primary" onclick="navigate('scorecard-builder')">Create Scorecard</button></div>`;
   } else {
     scorecards.forEach(sc => {
-      const formNames = (sc.form_ids || []).map(fid => {
-        const f = forms.find(f => f.form_id === fid);
-        return f ? f.name : fid;
-      }).join(', ');
-      html += `
-        <div class="card" style="cursor:pointer" onclick="navigate('scorecard-builder', ${JSON.stringify(sc).replace(/"/g, '&quot;')})">
-          <div class="card-header">
-            <h3>${escapeHtml(sc.name)}</h3>
-            <div class="btn-group">
-              <span class="badge badge-score">${sc.scorecard_id}</span>
-              <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteScorecard('${sc.scorecard_id}')">Delete</button>
-            </div>
-          </div>
-          <div style="display:flex;gap:18px;font-size:13px;color:var(--text-muted)">
-            <span>Forms: ${formNames || 'None'}</span>
-            <span>${(sc.score_mappings || []).length} score mappings</span>
-            <span>Critical fail: ${sc.critical_fail_behavior || 'flag'}</span>
-          </div>
-        </div>
-      `;
+      const qCount = (sc.sections || []).reduce((c, s) => c + (s.questions || []).length, 0);
+      const sCount = (sc.sections || []).length;
+      html += `<div class="card" style="cursor:pointer" onclick="navigate('scorecard-builder', ${JSON.stringify(sc).replace(/"/g, '&quot;')})"><div class="card-header"><h3>${escapeHtml(sc.name)}</h3><div class="btn-group"><span class="badge badge-score">${sc.scorecard_id}</span><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();duplicateScorecard('${sc.scorecard_id}')">Duplicate</button><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteScorecard('${sc.scorecard_id}')">Delete</button></div></div><div style="display:flex;gap:18px;font-size:13px;color:var(--text-muted)"><span>${sCount} sections</span><span>${qCount} questions</span><span>Min ${sc.min_duration_seconds || 30}s duration</span></div></div>`;
     });
   }
-
   el.innerHTML = html;
 }
 
@@ -2021,363 +452,461 @@ async function deleteScorecard(scId) {
   showToast('Scorecard deleted');
 }
 
+async function duplicateScorecard(scId) {
+  const sc = scorecards.find(s => s.scorecard_id === scId);
+  if (!sc) return;
+  const dup = JSON.parse(JSON.stringify(sc));
+  dup.scorecard_id = '';
+  dup.name = sc.name + ' (Copy)';
+  navigate('scorecard-builder', dup);
+}
+
 // ============================================================
-//  SCORECARD BUILDER VIEW
+//  SCORECARD BUILDER VIEW (with integrated question builder)
 // ============================================================
 function renderScorecardBuilder(el, existingSc) {
   const isEdit = !!existingSc;
-  const sc = existingSc || { scorecard_id: '', name: '', form_ids: [], score_mappings: [], critical_fail_behavior: 'flag', min_duration_seconds: 30 };
-
-  window._scFormIds = [...(sc.form_ids || [])];
-  window._scMappings = JSON.parse(JSON.stringify(sc.score_mappings || []));
+  const sc = existingSc || { scorecard_id: '', name: '', sections: [], min_duration_seconds: 30 };
 
   let html = `
     <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
-      <div>
-        <h1>${isEdit ? 'Edit Scorecard' : 'New Scorecard'}</h1>
-        <p>Select forms and assign point values to each question</p>
-      </div>
+      <div><h1>${isEdit ? 'Edit Scorecard' : 'New Scorecard'}</h1><p>Build sections, questions, and scoring in one place</p></div>
       <div class="btn-group">
         <button class="btn btn-secondary" onclick="navigate('scorecards')">&larr; Back</button>
         <button class="btn btn-primary" id="btnSaveScorecard">Save Scorecard</button>
       </div>
     </div>
-
     <div class="card">
       <div class="form-row">
-        <div class="form-group">
-          <label>Scorecard Name</label>
-          <input class="form-input" id="scName" value="${escapeHtml(sc.name)}" placeholder="e.g., Support Team - Q2 2026">
-        </div>
-        <div class="form-group">
-          <label>Scorecard ID (auto-generated if empty)</label>
-          <input class="form-input" id="scId" value="${escapeHtml(sc.scorecard_id)}" ${isEdit ? 'readonly style="opacity:0.5"' : ''}>
-        </div>
+        <div class="form-group"><label>Scorecard Name</label><input class="form-input" id="scName" value="${escapeHtml(sc.name)}" placeholder="e.g., Support Team - Q2 2026"></div>
+        <div class="form-group"><label>Scorecard ID (auto-generated if empty)</label><input class="form-input" id="scId" value="${escapeHtml(sc.scorecard_id)}" ${isEdit && sc.scorecard_id ? 'readonly style="opacity:0.5"' : ''}></div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Critical Fail Behavior</label>
-          <select class="form-select" id="scCritBehavior">
-            <option value="flag" ${sc.critical_fail_behavior === 'flag' ? 'selected' : ''}>Flag for review</option>
-            <option value="zero" ${sc.critical_fail_behavior === 'zero' ? 'selected' : ''}>Zero the score</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Min Duration (seconds)</label>
-          <input class="form-input" id="scMinDuration" type="number" value="${sc.min_duration_seconds || 30}">
-        </div>
-      </div>
+      <div class="form-group"><label>Min Duration (seconds)</label><input class="form-input" id="scMinDuration" type="number" value="${sc.min_duration_seconds || 30}" style="max-width:200px"></div>
     </div>
 
-    <h2 style="font-family:var(--font-display);font-size:16px;margin-bottom:12px;font-weight:700">Select Forms</h2>
-    <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px">Choose which evaluation forms to include in this scorecard</p>
-    <div class="scorecard-form-selector" id="scFormSelector"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h2 style="font-family:var(--font-display);font-size:16px;font-weight:700">Sections & Questions</h2>
+      <div class="btn-group">
+        <button class="btn btn-secondary btn-sm" id="btnImportFile">Import from CSV</button>
+        <button class="btn btn-secondary btn-sm" id="btnAddFromTemplates">+ From Templates</button>
+        <button class="btn btn-secondary btn-sm" id="btnAddSection">+ Add Section</button>
+      </div>
+    </div>
+    <div id="scSections"></div>
 
-    <h2 style="font-family:var(--font-display);font-size:16px;margin:28px 0 12px;font-weight:700">Score Mappings</h2>
-    <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px">Assign point values for each answer option</p>
-    <div class="card" style="padding:0;overflow:hidden" id="scMappingsContainer"></div>
+    <div id="maxScoreDisplay" style="margin-top:16px;padding:16px 20px;background:#f9fafb;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--text-muted)"></div>
   `;
 
   el.innerHTML = html;
-  renderScFormSelector();
-  renderScMappings();
+  window._scSections = JSON.parse(JSON.stringify(sc.sections || []));
+  renderScSections();
+  updateMaxScore();
 
+  document.getElementById('btnAddSection').onclick = () => {
+    window._scSections.push({ name: '', description: '', category: '', questions: [] });
+    renderScSections();
+  };
   document.getElementById('btnSaveScorecard').onclick = saveCurrentScorecard;
+  document.getElementById('btnAddFromTemplates').onclick = showTemplateModal;
+  document.getElementById('btnImportFile').onclick = showImportModal;
 }
 
-function renderScFormSelector() {
-  const container = document.getElementById('scFormSelector');
-  if (forms.length === 0) {
-    container.innerHTML = '<p style="font-size:13px;color:var(--text-dim)">No forms created yet. Create a form first.</p>';
+function renderScSections() {
+  const container = document.getElementById('scSections');
+  if (window._scSections.length === 0) {
+    container.innerHTML = `<div class="empty-state" style="min-height:20vh"><p style="color:var(--text-dim);font-size:13px">No sections yet. Add from templates, import from CSV, or create a new section.</p></div>`;
     return;
   }
 
-  container.innerHTML = forms.map(f => `
-    <div class="form-chip ${window._scFormIds.includes(f.form_id) ? 'selected' : ''}"
-         onclick="toggleScForm('${f.form_id}')">
-      ${escapeHtml(f.name)}
-    </div>
-  `).join('');
+  let html = '';
+  window._scSections.forEach((section, si) => {
+    const catOptions = ['opening_greeting','discovery_needs_assessment','product_knowledge_pitch','troubleshooting_resolution','empathy_soft_skills','compliance','closing_next_steps'].map(c => `<option value="${c}" ${section.category === c ? 'selected' : ''}>${c.replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase())}</option>`).join('');
+    html += `<div class="card"><div class="card-header"><input class="form-input" value="${escapeHtml(section.name)}" placeholder="Section name" style="font-weight:600;background:transparent;border:none;padding:0;font-size:15px;width:auto;flex:1;box-shadow:none" onchange="window._scSections[${si}].name=this.value"><div class="btn-group"><button class="btn btn-ghost btn-sm" onclick="addQuestionToSection(${si})">+ Question</button><button class="btn btn-danger btn-sm" onclick="removeSection(${si})">Remove</button></div></div>`;
+    html += `<div class="form-group" style="margin-bottom:12px"><label>Category</label><select class="form-select" onchange="window._scSections[${si}].category=this.value" style="max-width:320px"><option value="">Select category...</option>${catOptions}</select></div>`;
+
+    section.questions.forEach((q, qi) => {
+      const typeLabel = q.answer_type === 'binary' ? 'Binary' : 'Likert 0-2';
+      const typeBadge = q.answer_type === 'binary' ? 'badge-binary' : 'badge-likert';
+      const maxPts = q.scores ? Math.max(...Object.values(q.scores)) : 0;
+      html += `<div style="padding:12px 0;border-top:1px solid var(--border);display:flex;align-items:flex-start;gap:10px"><div style="flex:1"><div style="font-size:13px;margin-bottom:5px;line-height:1.5">${escapeHtml(q.question_text) || '<em style="color:var(--text-dim)">Untitled question</em>'}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="badge ${typeBadge}">${typeLabel}</span>${q.critical_fail ? '<span class="badge badge-critical">CRITICAL</span>' : ''}<span class="badge badge-method">${q.matching_method || 'llm'}</span><span class="badge badge-score">${maxPts} pts</span></div></div><button class="btn btn-ai btn-sm" onclick="autoSuggestQuestion(${si},${qi})" title="Refine with AI">AI Refine</button><button class="btn btn-ghost btn-sm" onclick="editQuestion(${si},${qi})" style="font-size:11px">Edit</button><button class="btn btn-ghost btn-sm" onclick="removeQuestion(${si},${qi})" style="font-size:11px;color:var(--red)">X</button></div>`;
+    });
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+  updateMaxScore();
 }
 
-function toggleScForm(formId) {
-  const idx = window._scFormIds.indexOf(formId);
-  if (idx >= 0) {
-    window._scFormIds.splice(idx, 1);
-    const form = forms.find(f => f.form_id === formId);
-    if (form) {
-      const qIds = new Set();
-      form.sections.forEach(s => s.questions.forEach(q => qIds.add(q.question_id)));
-      window._scMappings = window._scMappings.filter(m => !qIds.has(m.question_id));
-    }
+function removeSection(si) { window._scSections.splice(si, 1); renderScSections(); }
+function removeQuestion(si, qi) { window._scSections[si].questions.splice(qi, 1); renderScSections(); }
+
+function addQuestionToSection(si) {
+  window._scSections[si].questions.push({
+    question_text: '', answer_type: 'binary', matching_method: 'llm', keywords: [],
+    answer_definitions: { Yes: '' }, scores: { Yes: 5, No: 0 },
+    na_eligible: true, critical_fail: false, examples: []
+  });
+  renderScSections();
+  const qi = window._scSections[si].questions.length - 1;
+  setTimeout(() => editQuestion(si, qi), 50);
+}
+
+function updateMaxScore() {
+  let totalPts = 0, totalQs = 0;
+  window._scSections.forEach(s => s.questions.forEach(q => {
+    totalQs++;
+    if (q.scores) totalPts += Math.max(...Object.values(q.scores));
+  }));
+  const el = document.getElementById('maxScoreDisplay');
+  if (el) el.innerHTML = `<strong>Maximum possible score:</strong> ${totalPts} points across ${totalQs} questions (excluding N/A)`;
+}
+
+function editQuestion(si, qi) {
+  const q = window._scSections[si].questions[qi];
+  let defFields = '';
+  if (q.answer_type === 'binary') {
+    defFields = `<div class="form-group"><label>"Yes" Definition</label><textarea class="form-textarea" id="eq_def_yes" rows="2">${escapeHtml(q.answer_definitions?.Yes || '')}</textarea></div><p style="font-size:12px;color:var(--text-dim);margin-bottom:18px;font-style:italic">No is implicit — if Yes criteria are not met, the answer is No.</p>`;
   } else {
-    window._scFormIds.push(formId);
-    const form = forms.find(f => f.form_id === formId);
-    if (form) {
-      form.sections.forEach(s => s.questions.forEach(q => {
-        if (!window._scMappings.find(m => m.question_id === q.question_id)) {
-          if (q.answer_type === 'binary') {
-            window._scMappings.push({ question_id: q.question_id, scores: { Yes: 5, No: 0 } });
-          } else {
-            window._scMappings.push({ question_id: q.question_id, scores: { '0': 0, '1': 5, '2': 10 } });
-          }
-        }
-      }));
-    }
+    defFields = `<div class="form-group"><label>"0" Definition (Did not do)</label><textarea class="form-textarea" id="eq_def_0" rows="2">${escapeHtml(q.answer_definitions?.['0'] || '')}</textarea></div><div class="form-group"><label>"1" Definition (Partially)</label><textarea class="form-textarea" id="eq_def_1" rows="2">${escapeHtml(q.answer_definitions?.['1'] || '')}</textarea></div><div class="form-group"><label>"2" Definition (Fully did)</label><textarea class="form-textarea" id="eq_def_2" rows="2">${escapeHtml(q.answer_definitions?.['2'] || '')}</textarea></div>`;
   }
-  renderScFormSelector();
-  renderScMappings();
+
+  let scoreFields = '';
+  if (q.answer_type === 'binary') {
+    scoreFields = `<div class="form-row"><div class="form-group"><label>Yes Score</label><input class="form-input" id="eq_score_yes" type="number" value="${q.scores?.Yes ?? 5}"></div><div class="form-group"><label>No Score</label><input class="form-input" id="eq_score_no" type="number" value="${q.scores?.No ?? 0}"></div></div>`;
+  } else {
+    scoreFields = `<div class="form-row-3"><div class="form-group"><label>Score for 0</label><input class="form-input" id="eq_score_0" type="number" value="${q.scores?.['0'] ?? 0}"></div><div class="form-group"><label>Score for 1</label><input class="form-input" id="eq_score_1" type="number" value="${q.scores?.['1'] ?? 5}"></div><div class="form-group"><label>Score for 2</label><input class="form-input" id="eq_score_2" type="number" value="${q.scores?.['2'] ?? 10}"></div></div>`;
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'grading-overlay active';
+  overlay.style.alignItems = 'flex-start';
+  overlay.style.paddingTop = '60px';
+  overlay.innerHTML = `<div class="grading-modal" style="text-align:left;max-width:620px;width:100%;padding:36px;max-height:82vh;overflow-y:auto">
+    <h2 style="margin-bottom:24px">Edit Question</h2>
+    <div class="form-group"><label>Question Text</label><textarea class="form-textarea" id="eq_text" rows="2">${escapeHtml(q.question_text)}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Answer Type</label><select class="form-select" id="eq_type"><option value="binary" ${q.answer_type === 'binary' ? 'selected' : ''}>Binary (Yes/No)</option><option value="likert_0_2" ${q.answer_type === 'likert_0_2' ? 'selected' : ''}>Likert (0-2)</option></select></div>
+      <div class="form-group"><label>Matching Method</label><select class="form-select" id="eq_method"><option value="llm" ${q.matching_method === 'llm' ? 'selected' : ''}>LLM</option><option value="keyword" ${q.matching_method === 'keyword' ? 'selected' : ''}>Keyword</option><option value="hybrid" ${q.matching_method === 'hybrid' ? 'selected' : ''}>Hybrid</option></select></div>
+    </div>
+    <div class="form-group"><label>Keywords (comma-separated, for keyword/hybrid)</label><input class="form-input" id="eq_keywords" value="${escapeHtml((q.keywords || []).join(', '))}"></div>
+    <div id="eq_definitions">${defFields}</div>
+    <div id="eq_scores">${scoreFields}</div>
+    <div class="form-row">
+      <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end">
+        <label class="form-check"><input type="checkbox" id="eq_na" ${q.na_eligible ? 'checked' : ''}> N/A Eligible</label>
+        <label class="form-check" style="margin-top:8px"><input type="checkbox" id="eq_critical" ${q.critical_fail ? 'checked' : ''} onchange="document.getElementById('eq_critical_level_group').style.display=this.checked?'block':'none'"> Critical Fail</label>
+      </div>
+      <div class="form-group" id="eq_critical_level_group" style="display:${q.critical_fail ? 'block' : 'none'}"><label>Critical Fail Level</label><select class="form-select" id="eq_critical_level"><option value="zero_scorecard" ${(q.critical_fail_level || 'zero_scorecard') === 'zero_scorecard' ? 'selected' : ''}>Zero entire scorecard</option><option value="zero_section" ${q.critical_fail_level === 'zero_section' ? 'selected' : ''}>Zero this section only</option></select></div>
+    </div>
+    <div class="btn-group" style="margin-top:24px;justify-content:flex-end"><button class="btn btn-secondary" id="eq_cancel">Cancel</button><button class="btn btn-primary" id="eq_save">Save Question</button></div>
+  </div>`;
+
+  document.body.appendChild(overlay);
+
+  const refreshFields = () => {
+    const answerType = document.getElementById('eq_type').value;
+    const defsEl = document.getElementById('eq_definitions');
+    const scoresEl = document.getElementById('eq_scores');
+    if (answerType === 'binary') {
+      defsEl.innerHTML = `<div class="form-group"><label>"Yes" Definition</label><textarea class="form-textarea" id="eq_def_yes" rows="2"></textarea></div><p style="font-size:12px;color:var(--text-dim);margin-bottom:18px;font-style:italic">No is implicit.</p>`;
+      scoresEl.innerHTML = `<div class="form-row"><div class="form-group"><label>Yes Score</label><input class="form-input" id="eq_score_yes" type="number" value="5"></div><div class="form-group"><label>No Score</label><input class="form-input" id="eq_score_no" type="number" value="0"></div></div>`;
+    } else {
+      defsEl.innerHTML = `<div class="form-group"><label>"0" Definition</label><textarea class="form-textarea" id="eq_def_0" rows="2"></textarea></div><div class="form-group"><label>"1" Definition</label><textarea class="form-textarea" id="eq_def_1" rows="2"></textarea></div><div class="form-group"><label>"2" Definition</label><textarea class="form-textarea" id="eq_def_2" rows="2"></textarea></div>`;
+      scoresEl.innerHTML = `<div class="form-row-3"><div class="form-group"><label>Score for 0</label><input class="form-input" id="eq_score_0" type="number" value="0"></div><div class="form-group"><label>Score for 1</label><input class="form-input" id="eq_score_1" type="number" value="5"></div><div class="form-group"><label>Score for 2</label><input class="form-input" id="eq_score_2" type="number" value="10"></div></div>`;
+    }
+  };
+
+  document.getElementById('eq_type').onchange = refreshFields;
+  document.getElementById('eq_cancel').onclick = () => overlay.remove();
+  document.getElementById('eq_save').onclick = () => {
+    const answerType = document.getElementById('eq_type').value;
+    let defs = {}, scores = {};
+    if (answerType === 'binary') {
+      defs = { Yes: document.getElementById('eq_def_yes').value };
+      scores = { Yes: parseInt(document.getElementById('eq_score_yes').value) || 0, No: parseInt(document.getElementById('eq_score_no').value) || 0 };
+    } else {
+      defs = { '0': document.getElementById('eq_def_0').value, '1': document.getElementById('eq_def_1').value, '2': document.getElementById('eq_def_2').value };
+      scores = { '0': parseInt(document.getElementById('eq_score_0').value) || 0, '1': parseInt(document.getElementById('eq_score_1').value) || 0, '2': parseInt(document.getElementById('eq_score_2').value) || 0 };
+    }
+    const kw = document.getElementById('eq_keywords').value;
+    const isCritical = document.getElementById('eq_critical').checked;
+    window._scSections[si].questions[qi] = { ...q, question_text: document.getElementById('eq_text').value, answer_type: answerType, matching_method: document.getElementById('eq_method').value, keywords: kw ? kw.split(',').map(k => k.trim()).filter(Boolean) : [], answer_definitions: defs, scores: scores, na_eligible: document.getElementById('eq_na').checked, critical_fail: isCritical, critical_fail_level: isCritical ? document.getElementById('eq_critical_level').value : undefined, examples: q.examples || [] };
+    overlay.remove();
+    renderScSections();
+    showToast('Question updated');
+  };
 }
 
-function renderScMappings() {
-  const container = document.getElementById('scMappingsContainer');
-
-  if (window._scFormIds.length === 0) {
-    container.innerHTML = '<p style="padding:28px;text-align:center;color:var(--text-dim);font-size:13px">Select forms above to configure score mappings</p>';
-    return;
+// --- Auto-Suggest (Refine with AI) ---
+async function autoSuggestQuestion(si, qi) {
+  const q = window._scSections[si].questions[qi];
+  if (!q.question_text) { showToast('Enter question text first', 'error'); return; }
+  if (q.answer_definitions && Object.values(q.answer_definitions).some(v => v && v.length > 0)) {
+    if (!confirm('This will replace your current answer definitions and examples. Continue?')) return;
   }
 
-  let rows = [];
-  window._scFormIds.forEach(fid => {
-    const form = forms.find(f => f.form_id === fid);
-    if (!form) return;
-    form.sections.forEach(sec => {
-      sec.questions.forEach(q => {
-        const mapping = window._scMappings.find(m => m.question_id === q.question_id);
-        rows.push({ form: form.name, section: sec.name, question: q, mapping });
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Refining...';
+
+  try {
+    const res = await fetch(`${API}/api/auto-suggest`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question_text: q.question_text,
+        answer_type: q.answer_type,
+        section_category: window._scSections[si].category || 'discovery_needs_assessment',
+        existing_answer_text: q.answer_definitions
+      })
+    });
+    if (!res.ok) { const err = await res.json(); throw new Error(err.detail || 'Failed'); }
+    const data = await res.json();
+
+    // Apply suggestions
+    if (data.refined_question) q.question_text = data.refined_question;
+    if (data.answer_definitions) q.answer_definitions = data.answer_definitions;
+    if (data.examples) q.examples = data.examples;
+    window._scSections[si].questions[qi] = q;
+
+    renderScSections();
+    showToast(data.refinement_notes ? `Refined: ${data.refinement_notes}` : 'Question refined with AI-generated definitions and examples');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'AI Refine';
+  }
+}
+
+// --- Template Modal ---
+function showTemplateModal() {
+  const overlay = document.createElement('div');
+  overlay.className = 'grading-overlay active';
+  overlay.style.alignItems = 'flex-start';
+  overlay.style.paddingTop = '60px';
+
+  let pickerHtml = '';
+  templates.forEach((cat, ci) => {
+    pickerHtml += `<div class="template-category" data-cat="${ci}"><div class="template-category-header" onclick="this.parentElement.classList.toggle('open')"><span>${cat.category}</span><span style="font-size:11px;color:var(--text-dim)">${cat.questions.length}</span></div><div class="template-category-body">`;
+    cat.questions.forEach((q, qi) => {
+      const typeLabel = q.answer_type === 'binary' ? 'Binary' : 'Likert 0-2';
+      const typeBadge = q.answer_type === 'binary' ? 'badge-binary' : 'badge-likert';
+      pickerHtml += `<div class="template-question-item" onclick="this.querySelector('input').checked=!this.querySelector('input').checked;this.classList.toggle('selected')"><input type="checkbox" data-cat="${ci}" data-q="${qi}" onclick="event.stopPropagation();this.closest('.template-question-item').classList.toggle('selected',this.checked)"><div><div>${q.question_text}</div><div class="template-question-meta"><span class="badge ${typeBadge}">${typeLabel}</span>${q.critical_fail ? '<span class="badge badge-critical">CRITICAL</span>' : ''}<span class="badge badge-method">${q.matching_method}</span></div></div></div>`;
+    });
+    pickerHtml += `</div></div>`;
+  });
+
+  overlay.innerHTML = `<div class="grading-modal" style="text-align:left;max-width:600px;width:100%;padding:36px;max-height:82vh;overflow-y:auto"><h2 style="margin-bottom:16px">Add from Templates</h2><div class="template-picker" style="max-height:50vh">${pickerHtml}</div><div class="btn-group" style="justify-content:flex-end"><button class="btn btn-secondary" onclick="this.closest('.grading-overlay').remove()">Cancel</button><button class="btn btn-primary" id="btnAddTemplateQuestions">Add Selected</button></div></div>`;
+  document.body.appendChild(overlay);
+
+  document.getElementById('btnAddTemplateQuestions').onclick = () => {
+    const checked = overlay.querySelectorAll('input[type="checkbox"]:checked');
+    if (checked.length === 0) { showToast('No questions selected', 'error'); return; }
+    const byCategory = {};
+    checked.forEach(cb => {
+      const ci = parseInt(cb.dataset.cat), qi = parseInt(cb.dataset.q);
+      const cat = templates[ci];
+      if (!byCategory[cat.category]) byCategory[cat.category] = { section_category: cat.section_category, questions: [] };
+      byCategory[cat.category].questions.push(JSON.parse(JSON.stringify(cat.questions[qi])));
+    });
+    Object.entries(byCategory).forEach(([catName, data]) => {
+      let section = window._scSections.find(s => s.name === catName);
+      if (!section) { section = { name: catName, description: '', category: data.section_category || '', questions: [] }; window._scSections.push(section); }
+      section.questions.push(...data.questions);
+    });
+    overlay.remove();
+    renderScSections();
+    showToast(`Added ${checked.length} questions`);
+  };
+}
+
+// --- Import from CSV Modal ---
+function showImportModal() {
+  const overlay = document.createElement('div');
+  overlay.className = 'grading-overlay active';
+  overlay.style.alignItems = 'flex-start';
+  overlay.style.paddingTop = '60px';
+  overlay.innerHTML = `<div class="grading-modal" style="text-align:left;max-width:560px;width:100%;padding:36px">
+    <h2 style="margin-bottom:16px">Import Questions from CSV</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Upload a CSV file with your evaluation questions. AI will extract questions, detect answer types, and assign sections.</p>
+    <div class="import-dropzone" id="importDropzone" onclick="document.getElementById('importFileInput').click()">
+      <div style="font-size:24px;margin-bottom:8px">&#128196;</div>
+      <div style="font-size:14px;font-weight:500;margin-bottom:4px">Click to upload or drag and drop</div>
+      <div style="font-size:12px;color:var(--text-dim)">CSV files up to 500KB</div>
+    </div>
+    <input type="file" id="importFileInput" accept=".csv" style="display:none">
+    <div id="importStatus" style="display:none;padding:16px;background:#f9fafb;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:16px">
+      <div class="grading-spinner" style="width:24px;height:24px;border-width:2px;margin:0 auto 8px"></div>
+      <div style="text-align:center;font-size:13px;color:var(--text-muted)">AI is extracting questions...</div>
+    </div>
+    <div class="btn-group" style="justify-content:flex-end"><button class="btn btn-secondary" onclick="this.closest('.grading-overlay').remove()">Cancel</button></div>
+  </div>`;
+  document.body.appendChild(overlay);
+
+  const fileInput = document.getElementById('importFileInput');
+  const dropzone = document.getElementById('importDropzone');
+
+  dropzone.ondragover = e => { e.preventDefault(); dropzone.classList.add('dragover'); };
+  dropzone.ondragleave = () => dropzone.classList.remove('dragover');
+  dropzone.ondrop = e => { e.preventDefault(); dropzone.classList.remove('dragover'); if (e.dataTransfer.files[0]) handleImportFile(e.dataTransfer.files[0], overlay); };
+  fileInput.onchange = () => { if (fileInput.files[0]) handleImportFile(fileInput.files[0], overlay); };
+}
+
+async function handleImportFile(file, overlay) {
+  const status = document.getElementById('importStatus');
+  const dropzone = document.getElementById('importDropzone');
+  dropzone.style.display = 'none';
+  status.style.display = 'block';
+
+  try {
+    // Parse CSV client-side
+    const text = await file.text();
+    const rows = text.split('\n').map(row => {
+      const cells = [];
+      let current = '', inQuotes = false;
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] === '"') { inQuotes = !inQuotes; }
+        else if (row[i] === ',' && !inQuotes) { cells.push(current.trim()); current = ''; }
+        else { current += row[i]; }
+      }
+      cells.push(current.trim());
+      return cells;
+    }).filter(r => r.some(c => c));
+
+    const res = await fetch(`${API}/api/import-questions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ file_content: rows, file_name: file.name, sheet_name: 'Sheet1' })
+    });
+
+    if (!res.ok) { const err = await res.json(); throw new Error(err.detail || 'Import failed'); }
+    const data = await res.json();
+    const questions = data.questions || [];
+
+    // Group by section
+    const bySection = {};
+    questions.forEach(q => {
+      if (!bySection[q.section]) bySection[q.section] = [];
+      bySection[q.section].push(q);
+    });
+
+    // Add to scorecard sections
+    const SECTION_NAMES = {
+      opening_greeting: 'Opening & Greeting', discovery_needs_assessment: 'Discovery & Needs Assessment',
+      product_knowledge_pitch: 'Product Knowledge & Pitch', troubleshooting_resolution: 'Troubleshooting & Resolution',
+      empathy_soft_skills: 'Empathy & Soft Skills', compliance: 'Compliance', closing_next_steps: 'Closing & Next Steps'
+    };
+
+    Object.entries(bySection).forEach(([sectionKey, qs]) => {
+      const sectionName = SECTION_NAMES[sectionKey] || sectionKey;
+      let section = window._scSections.find(s => s.category === sectionKey);
+      if (!section) {
+        section = { name: sectionName, description: '', category: sectionKey, questions: [] };
+        window._scSections.push(section);
+      }
+      qs.forEach(q => {
+        const scores = q.answer_type === 'binary' ? { Yes: 5, No: 0 } : { '0': 0, '1': 5, '2': 10 };
+        section.questions.push({
+          question_text: q.question_text, answer_type: q.answer_type, matching_method: 'llm', keywords: [],
+          answer_definitions: q.answer_type === 'binary' ? { Yes: '' } : { '0': '', '1': '', '2': '' },
+          scores: scores, na_eligible: true, critical_fail: false, examples: []
+        });
       });
     });
-  });
 
-  let html = `<table class="mapping-table"><thead><tr>
-    <th>Question</th><th>Type</th><th>Score Values</th></tr></thead><tbody>`;
-
-  rows.forEach((row) => {
-    const q = row.question;
-    const m = row.mapping;
-    const typeLabel = q.answer_type === 'binary' ? 'Binary' : 'Likert';
-
-    html += `<tr>
-      <td>
-        <div style="font-size:13px;line-height:1.5">${escapeHtml(q.question_text)}</div>
-        <div style="font-size:10.5px;color:var(--text-dim);margin-top:3px">${escapeHtml(row.section)} &middot; ${escapeHtml(row.form)}</div>
-      </td>
-      <td><span class="badge ${q.answer_type === 'binary' ? 'badge-binary' : 'badge-likert'}">${typeLabel}</span></td>
-      <td>
-    `;
-
-    if (q.answer_type === 'binary') {
-      html += `
-        <span style="font-size:11px;color:var(--text-dim);margin-right:4px">Yes:</span>
-        <input value="${m?.scores?.Yes ?? 5}" onchange="updateMapping('${q.question_id}','Yes',this.value)">
-        <span style="font-size:11px;color:var(--text-dim);margin:0 4px 0 14px">No:</span>
-        <input value="${m?.scores?.No ?? 0}" onchange="updateMapping('${q.question_id}','No',this.value)">
-      `;
-    } else {
-      html += `
-        <span style="font-size:11px;color:var(--text-dim);margin-right:4px">0:</span>
-        <input value="${m?.scores?.['0'] ?? 0}" onchange="updateMapping('${q.question_id}','0',this.value)">
-        <span style="font-size:11px;color:var(--text-dim);margin:0 4px 0 10px">1:</span>
-        <input value="${m?.scores?.['1'] ?? 5}" onchange="updateMapping('${q.question_id}','1',this.value)">
-        <span style="font-size:11px;color:var(--text-dim);margin:0 4px 0 10px">2:</span>
-        <input value="${m?.scores?.['2'] ?? 10}" onchange="updateMapping('${q.question_id}','2',this.value)">
-      `;
-    }
-
-    html += `</td></tr>`;
-  });
-
-  html += `</tbody></table>`;
-  container.innerHTML = html;
-}
-
-function updateMapping(qId, key, value) {
-  let mapping = window._scMappings.find(m => m.question_id === qId);
-  if (!mapping) {
-    mapping = { question_id: qId, scores: {} };
-    window._scMappings.push(mapping);
+    overlay.remove();
+    renderScSections();
+    const msg = `Imported ${questions.length} questions into ${Object.keys(bySection).length} sections.${data.truncated ? ' ' + data.truncation_message : ''}`;
+    showToast(msg);
+    if (data.skipped_rows_summary) console.log('Import skipped:', data.skipped_rows_summary);
+  } catch(e) {
+    status.innerHTML = `<div style="text-align:center;color:var(--red);font-size:13px">${e.message}</div>`;
   }
-  mapping.scores[key] = parseInt(value) || 0;
 }
 
 async function saveCurrentScorecard() {
   const name = document.getElementById('scName').value.trim();
   if (!name) { showToast('Scorecard name is required', 'error'); return; }
-  if (window._scFormIds.length === 0) { showToast('Select at least one form', 'error'); return; }
+  if (window._scSections.length === 0) { showToast('Add at least one section', 'error'); return; }
 
   const scData = {
     scorecard_id: document.getElementById('scId').value.trim(),
     name: name,
-    form_ids: window._scFormIds,
-    score_mappings: window._scMappings,
-    critical_fail_behavior: document.getElementById('scCritBehavior').value,
+    sections: window._scSections,
     min_duration_seconds: parseInt(document.getElementById('scMinDuration').value) || 30
   };
 
   try {
-    const res = await fetch(`${API}/api/scorecards`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(scData)
-    });
+    const res = await fetch(`${API}/api/scorecards`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(scData) });
     if (!res.ok) throw new Error('Failed to save');
     await loadScorecards();
     showToast('Scorecard saved');
     navigate('scorecards');
-  } catch(e) {
-    showToast('Error saving scorecard: ' + e.message, 'error');
-  }
+  } catch(e) { showToast('Error saving scorecard: ' + e.message, 'error'); }
 }
 
 // ============================================================
 //  GRADE TRANSCRIPT VIEW
 // ============================================================
 function renderGradeView(el) {
-  let html = `
-    <div class="page-header">
-      <h1>Grade Transcript</h1>
-      <p>Submit a call transcript and run a scorecard against it</p>
-    </div>
-  `;
-
+  let html = `<div class="page-header"><h1>Grade Transcript</h1><p>Submit a call transcript and run a scorecard against it</p></div>`;
   if (scorecards.length === 0) {
-    html += `
-      <div class="empty-state">
-        <div class="empty-state-icon">&#9654;</div>
-        <h2>No scorecards configured</h2>
-        <p>Create a scorecard first (which requires at least one evaluation form).</p>
-        <div class="btn-group">
-          <button class="btn btn-primary" onclick="navigate('forms')">Create Form</button>
-          <button class="btn btn-secondary" onclick="navigate('scorecards')">Create Scorecard</button>
-        </div>
-      </div>
-    `;
-    el.innerHTML = html;
-    return;
+    html += `<div class="empty-state"><div class="empty-state-icon">&#9654;</div><h2>No scorecards configured</h2><p>Create a scorecard first.</p><button class="btn btn-primary" onclick="navigate('scorecards')">Create Scorecard</button></div>`;
+    el.innerHTML = html; return;
   }
-
-  html += `
-    <div class="card">
-      <div class="form-group">
-        <label>Select Scorecard</label>
-        <select class="form-select" id="gradeScorecard">
-          ${scorecards.map(sc => `<option value="${sc.scorecard_id}">${escapeHtml(sc.name)}</option>`).join('')}
-        </select>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <h3>Transcript</h3>
-        <div class="btn-group">
-          <select class="form-select" id="sampleTranscriptSelect" style="width:auto;min-width:200px;padding:7px 36px 7px 14px;font-size:12px">
-            <option value="">Load sample transcript...</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Paste transcript JSON or select a sample above</label>
-        <textarea class="form-textarea" id="gradeTranscript" style="min-height:300px;font-family:var(--font-mono);font-size:12px" placeholder='{"call_metadata": {...}, "transcript": [...]}'></textarea>
-      </div>
-    </div>
-
-    <button class="btn btn-primary" id="btnRunGrade" style="width:100%;padding:15px;font-size:15px;font-weight:600;letter-spacing:-0.01em">Run Grading</button>
-  `;
-
+  html += `<div class="card"><div class="form-group"><label>Select Scorecard</label><select class="form-select" id="gradeScorecard">${scorecards.map(sc => `<option value="${sc.scorecard_id}">${escapeHtml(sc.name)}</option>`).join('')}</select></div></div>
+  <div class="card"><div class="card-header"><h3>Transcript</h3><div class="btn-group"><select class="form-select" id="sampleTranscriptSelect" style="width:auto;min-width:200px;padding:7px 36px 7px 14px;font-size:12px"><option value="">Load sample transcript...</option></select></div></div><div class="form-group"><label>Paste transcript JSON or select a sample above</label><textarea class="form-textarea" id="gradeTranscript" style="min-height:300px;font-family:var(--font-mono);font-size:12px" placeholder='{"call_metadata": {...}, "transcript": [...]}'></textarea></div></div>
+  <button class="btn btn-primary" id="btnRunGrade" style="width:100%;padding:15px;font-size:15px;font-weight:600">Run Grading</button>`;
   el.innerHTML = html;
 
-  // Load sample transcripts dropdown
   (async () => {
     try {
       const res = await fetch(`${API}/api/sample-transcripts`);
       const samples = await res.json();
       const select = document.getElementById('sampleTranscriptSelect');
-      samples.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = JSON.stringify(s.data);
-        opt.textContent = `${s.label} (${s.data.call_metadata.agent_name})`;
-        select.appendChild(opt);
-      });
-      select.onchange = function() {
-        if (this.value) {
-          document.getElementById('gradeTranscript').value = JSON.stringify(JSON.parse(this.value), null, 2);
-          showToast('Transcript loaded');
-        }
-      };
+      samples.forEach(s => { const opt = document.createElement('option'); opt.value = JSON.stringify(s.data); opt.textContent = `${s.label} (${s.data.call_metadata.agent_name})`; select.appendChild(opt); });
+      select.onchange = function() { if (this.value) { document.getElementById('gradeTranscript').value = JSON.stringify(JSON.parse(this.value), null, 2); showToast('Transcript loaded'); } };
     } catch(e) {}
   })();
-
   document.getElementById('btnRunGrade').onclick = runGrading;
 }
 
 async function runGrading() {
   const scorecardId = document.getElementById('gradeScorecard').value;
   const transcriptText = document.getElementById('gradeTranscript').value.trim();
-
   if (!transcriptText) { showToast('Paste a transcript first', 'error'); return; }
-
   let transcript;
-  try {
-    transcript = JSON.parse(transcriptText);
-  } catch(e) {
-    showToast('Invalid JSON in transcript', 'error');
-    return;
-  }
+  try { transcript = JSON.parse(transcriptText); } catch(e) { showToast('Invalid JSON in transcript', 'error'); return; }
 
   const overlay = document.getElementById('gradingOverlay');
   overlay.classList.add('active');
   animateSteps();
-
   const btn = document.getElementById('btnRunGrade');
-  btn.disabled = true;
-  btn.textContent = 'Grading...';
+  btn.disabled = true; btn.textContent = 'Grading...';
 
   try {
-    const res = await fetch(`${API}/api/grade-with-scorecard`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ transcript, scorecard_id: scorecardId })
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.detail || 'Grading failed');
-    }
-
+    const res = await fetch(`${API}/api/grade-with-scorecard`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ transcript, scorecard_id: scorecardId }) });
+    if (!res.ok) { const err = await res.json(); throw new Error(err.detail || 'Grading failed'); }
     const result = await res.json();
-    overlay.classList.remove('active');
-    resetSteps();
-
+    overlay.classList.remove('active'); resetSteps();
     await loadResults();
     showToast('Grading complete!');
     navigate('result-detail', result);
   } catch(e) {
-    overlay.classList.remove('active');
-    resetSteps();
+    overlay.classList.remove('active'); resetSteps();
     showToast('Error: ' + e.message, 'error');
-    btn.disabled = false;
-    btn.textContent = 'Run Grading';
+    btn.disabled = false; btn.textContent = 'Run Grading';
   }
 }
 
 function animateSteps() {
   const steps = ['step-keyword', 'step-haiku', 'step-sonnet', 'step-scoring'];
   steps.forEach((id, i) => {
-    setTimeout(() => {
-      document.getElementById(id).classList.add('active');
-      if (i > 0) {
-        document.getElementById(steps[i-1]).classList.remove('active');
-        document.getElementById(steps[i-1]).classList.add('done');
-      }
-    }, i * 2500);
+    setTimeout(() => { document.getElementById(id).classList.add('active'); if (i > 0) { document.getElementById(steps[i-1]).classList.remove('active'); document.getElementById(steps[i-1]).classList.add('done'); } }, i * 2500);
   });
 }
 
-function resetSteps() {
-  ['step-keyword', 'step-haiku', 'step-sonnet', 'step-scoring'].forEach(id => {
-    document.getElementById(id).classList.remove('active', 'done');
-  });
-}
+function resetSteps() { ['step-keyword', 'step-haiku', 'step-sonnet', 'step-scoring'].forEach(id => document.getElementById(id).classList.remove('active', 'done')); }
 
 // ============================================================
 //  HELPERS
@@ -2409,7 +938,6 @@ function escapeHtml(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// --- Init ---
 init();
 </script>
 </body>
